@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COSMOS FORTUNE ✧ 統計占い | 長久手高校PTA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#7c3aed;--primary-light:#a78bfa;
+  --secondary:#06b6d4;--secondary-light:#67e8f9;
+  --accent:#f59e0b;--accent-light:#fcd34d;
+  --danger:#ef4444;--success:#10b981;
+  --bg:#04040f;--bg2:#0a0a1f;--bg3:#0f0f2e;
+  --card:#0d0d2b;--card2:rgba(20,20,60,0.85);
+  --border:rgba(124,58,237,0.3);--border2:rgba(6,182,212,0.2);
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --glow:0 0 20px rgba(124,58,237,0.5);
+  --glow2:0 0 20px rgba(6,182,212,0.4);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Hiragino Sans','Yu Gothic UI','Meiryo',system-ui,sans-serif;
+  min-height:100vh;overflow-x:hidden;line-height:1.7;
+}
+#stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* ── SCREENS ── */
+.screen{display:none;position:relative;z-index:1;min-height:100vh}
+.screen.active{display:flex}
+
+/* ── INTRO ── */
+#intro{
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:2rem;
+}
+.logo-ring{
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,0.3),transparent 70%);
+  border:2px solid var(--primary-light);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 2rem;animation:pulse-ring 3s ease-in-out infinite;
+  box-shadow:var(--glow);font-size:4rem;
+}
+@keyframes pulse-ring{0%,100%{transform:scale(1);box-shadow:var(--glow)}50%{transform:scale(1.05);box-shadow:0 0 40px rgba(124,58,237,0.8)}}
+.intro-title{font-size:clamp(2rem,6vw,3.5rem);font-weight:900;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--primary-light),var(--secondary),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.5rem;text-shadow:none}
+.intro-subtitle{color:var(--text2);font-size:1rem;margin-bottom:.5rem;letter-spacing:.2em}
+.intro-tagline{
+  color:var(--text2);font-size:.9rem;max-width:480px;margin:1rem auto 2rem;
+  line-height:1.8;
+}
+.btn{
+  display:inline-block;padding:.9rem 2.5rem;border-radius:50px;
+  font-size:1.1rem;font-weight:700;cursor:pointer;border:none;
+  transition:all .3s;letter-spacing:.1em;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;box-shadow:var(--glow);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(124,58,237,0.7)}
+.school-badge{
+  margin-top:2rem;color:var(--text3);font-size:.8rem;letter-spacing:.15em;
+}
+
+/* ── CHAT ── */
+#chat{flex-direction:column;max-width:700px;margin:0 auto;padding:1rem;width:100%}
+.chat-header{
+  text-align:center;padding:1.5rem 1rem 1rem;
+  border-bottom:1px solid var(--border);margin-bottom:1rem;
+}
+.chat-header h2{
+  font-size:1.2rem;font-weight:700;letter-spacing:.15em;
+  background:linear-gradient(135deg,var(--primary-light),var(--secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.progress-bar{
+  width:100%;height:4px;background:rgba(255,255,255,0.1);
+  border-radius:2px;margin-top:1rem;overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  transition:width .5s ease;width:0%;
+}
+.chat-messages{
+  flex:1;overflow-y:auto;padding:.5rem 0;display:flex;flex-direction:column;gap:1rem;
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--primary);border-radius:2px}
+
+.msg{display:flex;gap:.75rem;align-items:flex-end;opacity:0;transform:translateY(20px);
+  transition:all .4s ease;animation:msgIn .4s ease forwards}
+@keyframes msgIn{to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+}
+.msg.bot .msg-avatar{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  box-shadow:var(--glow);
+}
+.msg.user .msg-avatar{
+  background:linear-gradient(135deg,var(--accent),#e11d48);
+}
+.msg-bubble{
+  max-width:80%;padding:.85rem 1.1rem;border-radius:18px;
+  font-size:.95rem;line-height:1.7;
+}
+.msg.bot .msg-bubble{
+  background:var(--card2);border:1px solid var(--border);
+  border-bottom-left-radius:4px;backdrop-filter:blur(10px);
+}
+.msg.user .msg-bubble{
+  background:linear-gradient(135deg,rgba(124,58,237,0.4),rgba(6,182,212,0.3));
+  border:1px solid var(--primary);border-bottom-right-radius:4px;
+}
+
+.chat-input-area{
+  padding:1rem 0;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:.75rem;
+}
+.input-group{display:flex;gap:.5rem}
+.chat-input{
+  flex:1;padding:.8rem 1.2rem;border-radius:25px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  color:var(--text);font-size:.95rem;outline:none;
+  transition:border-color .3s,box-shadow .3s;
+  font-family:inherit;
+}
+.chat-input:focus{border-color:var(--primary);box-shadow:var(--glow)}
+.chat-input::placeholder{color:var(--text3)}
+.btn-send{
+  width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;font-size:1.2rem;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--glow);transition:all .3s;flex-shrink:0;
+}
+.btn-send:hover{transform:scale(1.1)}
+.btn-send:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.upload-zone{
+  border:2px dashed var(--border);border-radius:16px;padding:1.5rem;
+  text-align:center;cursor:pointer;transition:all .3s;background:rgba(255,255,255,0.02);
+  position:relative;
+}
+.upload-zone:hover{border-color:var(--primary);background:rgba(124,58,237,0.05)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone .upload-icon{font-size:2rem;margin-bottom:.5rem}
+.upload-zone p{color:var(--text2);font-size:.9rem}
+.upload-preview{
+  display:none;border-radius:12px;overflow:hidden;max-height:200px;
+  border:1px solid var(--border);
+}
+.upload-preview img{width:100%;height:200px;object-fit:cover}
+.btn-skip{
+  background:transparent;border:1px solid var(--border);color:var(--text2);
+  padding:.6rem 1.5rem;border-radius:20px;cursor:pointer;font-size:.85rem;
+  transition:all .3s;font-family:inherit;width:fit-content;margin:0 auto;
+}
+.btn-skip:hover{border-color:var(--primary-light);color:var(--text)}
+.choice-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn-choice{
+  padding:.6rem 1.2rem;border-radius:20px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);color:var(--text);cursor:pointer;
+  font-size:.9rem;transition:all .3s;font-family:inherit;
+}
+.btn-choice:hover{border-color:var(--primary);background:rgba(124,58,237,0.15)}
+
+.typing-indicator{
+  display:flex;gap:4px;align-items:center;padding:.7rem 1rem;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:18px;border-bottom-left-radius:4px;width:fit-content;
+}
+.typing-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--primary-light);
+  animation:typing .8s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes typing{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-6px);opacity:1}}
+
+/* ── RESULTS ── */
+#results{flex-direction:column;padding:0}
+.results-hero{
+  text-align:center;padding:3rem 2rem 2rem;
+  background:radial-gradient(ellipse at top,rgba(124,58,237,0.2) 0%,transparent 70%);
+}
+.results-name{
+  font-size:2rem;font-weight:900;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--primary-light),var(--secondary),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.results-meta{color:var(--text2);font-size:.9rem;margin-top:.5rem;letter-spacing:.1em}
+.overall-fortune{
+  margin:2rem auto;max-width:700px;padding:2rem;
+  background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.1));
+  border:1px solid var(--primary);border-radius:20px;
+  text-align:center;box-shadow:var(--glow);
+}
+.fortune-emoji{font-size:3rem;margin-bottom:.5rem}
+.fortune-title{
+  font-size:1.8rem;font-weight:900;letter-spacing:.2em;
+  background:linear-gradient(135deg,var(--accent-light),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.fortune-message{color:var(--text);margin-top:1rem;font-size:1rem;line-height:1.9}
+
+.results-grid{
+  max-width:700px;margin:0 auto;padding:1rem 1.5rem 3rem;
+  display:flex;flex-direction:column;gap:2rem;
+}
+.result-card{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;backdrop-filter:blur(10px);
+}
+.card-header{
+  padding:1.2rem 1.5rem;
+  background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.1));
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:.75rem;
+}
+.card-icon{font-size:1.5rem}
+.card-title{font-size:1.1rem;font-weight:700;letter-spacing:.1em}
+.card-badge{
+  margin-left:auto;padding:.2rem .8rem;border-radius:20px;
+  font-size:.8rem;font-weight:700;letter-spacing:.05em;
+}
+.badge-great{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.badge-good{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff}
+.badge-mid{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+
+.card-body{padding:1.5rem}
+.fortune-text{color:var(--text);line-height:1.9;margin-bottom:1rem}
+.stat-box{
+  margin-top:1.25rem;padding:1.25rem;
+  background:rgba(0,0,0,0.3);border-radius:12px;
+  border-left:3px solid var(--secondary);
+}
+.stat-box-title{
+  font-size:.8rem;letter-spacing:.2em;color:var(--secondary);
+  text-transform:uppercase;margin-bottom:.75rem;font-weight:700;
+}
+.stat-box p{color:var(--text2);font-size:.88rem;line-height:1.8}
+
+/* Biorhythm chart */
+.bio-chart-wrap{margin:1rem 0;border-radius:12px;overflow:hidden;background:rgba(0,0,0,0.4)}
+#bio-canvas{width:100%;display:block}
+.bio-legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem;font-size:.85rem}
+.bio-legend-item{display:flex;align-items:center;gap:.4rem}
+.bio-dot{width:12px;height:12px;border-radius:50%}
+
+/* Zodiac */
+.zodiac-card-inner{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.zodiac-symbol{
+  font-size:4rem;width:80px;height:80px;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle,rgba(124,58,237,0.2),transparent);
+  border:1px solid var(--border);border-radius:50%;flex-shrink:0;
+}
+.zodiac-info{flex:1}
+.zodiac-name{font-size:1.4rem;font-weight:700}
+.zodiac-dates{color:var(--text2);font-size:.85rem;margin-bottom:.5rem}
+
+/* Name strokes */
+.strokes-display{
+  display:flex;gap:.5rem;align-items:flex-end;flex-wrap:wrap;margin:1rem 0;
+}
+.stroke-item{
+  text-align:center;padding:.75rem 1rem;
+  background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid var(--border);
+}
+.stroke-char{font-size:1.4rem;font-weight:700}
+.stroke-num{font-size:.8rem;color:var(--primary-light);margin-top:.2rem}
+.stroke-label{font-size:.7rem;color:var(--text3)}
+.gaku-bar{display:flex;gap:.5rem;margin:1rem 0;flex-wrap:wrap}
+.gaku-item{flex:1;min-width:100px;padding:.75rem;border-radius:10px;
+  background:rgba(0,0,0,0.3);border:1px solid var(--border);text-align:center}
+.gaku-name{font-size:.75rem;color:var(--text3);margin-bottom:.2rem}
+.gaku-num{font-size:1.3rem;font-weight:700;color:var(--accent-light)}
+.gaku-luck{font-size:.75rem;color:var(--text2)}
+
+/* Image analysis */
+.img-analysis{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;
+}
+.img-upload-display{
+  border-radius:12px;overflow:hidden;border:1px solid var(--border);
+  max-height:180px;
+}
+.img-upload-display img{width:100%;height:180px;object-fit:cover}
+.img-no-upload{
+  height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.3);border:1px dashed var(--border);border-radius:12px;
+  color:var(--text3);font-size:.85rem;gap:.5rem;
+}
+.ai-technique-box{
+  padding:1rem;background:rgba(0,0,0,0.3);border-radius:12px;
+  border-left:3px solid var(--accent);
+}
+.ai-technique-title{font-size:.8rem;color:var(--accent);letter-spacing:.15em;margin-bottom:.5rem;font-weight:700}
+.ai-technique-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.ai-technique-list li{
+  font-size:.82rem;color:var(--text2);
+  display:flex;align-items:flex-start;gap:.4rem;line-height:1.6;
+}
+.ai-technique-list li::before{content:"▸";color:var(--accent);flex-shrink:0;margin-top:.1rem}
+
+/* Stat explanation */
+.stat-chart{display:flex;gap:.5rem;align-items:flex-end;height:80px;margin:1rem 0}
+.stat-bar{
+  flex:1;border-radius:4px 4px 0 0;
+  background:linear-gradient(180deg,var(--primary),var(--secondary));
+  min-width:20px;position:relative;transition:height .8s ease;
+}
+.stat-bar-label{
+  position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  font-size:.65rem;color:var(--text3);white-space:nowrap;
+}
+
+/* Share */
+.results-footer{text-align:center;padding:2rem;border-top:1px solid var(--border)}
+.restart-btn{
+  display:inline-block;padding:1rem 3rem;border-radius:50px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;font-size:1rem;font-weight:700;cursor:pointer;border:none;
+  box-shadow:var(--glow);transition:all .3s;font-family:inherit;letter-spacing:.1em;
+}
+.restart-btn:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(124,58,237,0.8)}
+
+/* Utility */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:1rem 0}
+.highlight{color:var(--accent-light);font-weight:700}
+.highlight2{color:var(--secondary-light);font-weight:700}
+
+/* Responsive */
+@media(max-width:500px){
+  .img-analysis{grid-template-columns:1fr}
+  .zodiac-card-inner{flex-direction:column;align-items:flex-start}
+  .gaku-bar{gap:.3rem}
+  .gaku-item{min-width:80px}
+}
+
+/* Loading */
+#loading{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:var(--bg);align-items:center;justify-content:center;
+  flex-direction:column;gap:1.5rem;
+}
+#loading.active{display:flex}
+.loading-orb{
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,var(--primary),transparent);
+  animation:orb-pulse 1.5s ease-in-out infinite;
+  border:2px solid var(--primary-light);
+  display:flex;align-items:center;justify-content:center;font-size:2rem;
+}
+@keyframes orb-pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.3);opacity:1}}
+.loading-text{color:var(--text2);font-size:1rem;letter-spacing:.2em;animation:fade-pulse 1.5s ease infinite}
+@keyframes fade-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* Scrollbar global */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+
+<!-- Loading Overlay -->
+<div id="loading">
+  <div class="loading-orb">🔮</div>
+  <div class="loading-text">運命の糸を紡いでいます...</div>
+</div>
+
+<!-- ① INTRO SCREEN -->
+<div id="intro" class="screen active">
+  <div class="logo-ring">🔮</div>
+  <div class="intro-title">COSMOS FORTUNE</div>
+  <div class="intro-subtitle">✧ 統 計 占 い ✧</div>
+  <div class="intro-tagline">
+    姓名判断・バイオリズム・星座・人相・手相——<br>
+    宇宙の統計データがあなたの未来を照らす。<br>
+    占いの裏側にある<span style="color:var(--accent-light)">統計学・データ科学</span>も学べる！
+  </div>
+  <button class="btn btn-primary" onclick="startChat()">✨ 占いをはじめる</button>
+  <div class="school-badge">長久手高校 PTA 2025 文化祭</div>
+</div>
+
+<!-- ② CHAT SCREEN -->
+<div id="chat" class="screen">
+  <div class="chat-header">
+    <h2>🌌 COSMOS FORTUNE — 対話占い</h2>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-area" id="chat-input-area">
+    <div class="input-group">
+      <input type="text" class="chat-input" id="text-input" placeholder="ここに入力してください..." autocomplete="off">
+      <button class="btn-send" id="send-btn" onclick="sendUserInput()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ③ RESULTS SCREEN -->
+<div id="results" class="screen"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   STARS BACKGROUND
+════════════════════════════════════════════ */
+(function(){
+  const c=document.getElementById('stars-canvas');
+  const ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){c.width=innerWidth;c.height=innerHeight;init()}
+  function init(){
+    stars=[];
+    for(let i=0;i<200;i++){
+      stars.push({
+        x:Math.random()*c.width,y:Math.random()*c.height,
+        r:Math.random()*1.5+0.2,
+        a:Math.random(),da:(Math.random()-0.5)*0.005,
+        speed:Math.random()*0.1
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      s.a+=s.da;
+      if(s.a<=0||s.a>=1)s.da=-s.da;
+      s.y-=s.speed;
+      if(s.y<0)s.y=c.height;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${s.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize();draw();
+})();
+
+/* ════════════════════════════════════════════
+   DATA & CONFIG
+════════════════════════════════════════════ */
+const ZODIAC=[
+  {name:'山羊座',en:'Capricorn',symbol:'♑',emoji:'🐐',start:[12,22],end:[1,19],
+   trait:'努力家で現実的。目標に向かって着実に歩む星座。',element:'土'},
+  {name:'水瓶座',en:'Aquarius',symbol:'♒',emoji:'🏺',start:[1,20],end:[2,18],
+   trait:'独創的で自由を愛する。新しいアイデアに満ちた星座。',element:'風'},
+  {name:'魚座',en:'Pisces',symbol:'♓',emoji:'🐟',start:[2,19],end:[3,20],
+   trait:'感受性豊かで夢見がち。芸術的センスを持つ星座。',element:'水'},
+  {name:'牡羊座',en:'Aries',symbol:'♈',emoji:'🐏',start:[3,21],end:[4,19],
+   trait:'情熱的で行動力抜群。リーダー気質の星座。',element:'火'},
+  {name:'牡牛座',en:'Taurus',symbol:'♉',emoji:'🐂',start:[4,20],end:[5,20],
+   trait:'粘り強く美を愛する。忍耐力と安定感の星座。',element:'土'},
+  {name:'双子座',en:'Gemini',symbol:'♊',emoji:'👯',start:[5,21],end:[6,20],
+   trait:'好奇心旺盛でコミュ力抜群。多才な星座。',element:'風'},
+  {name:'蟹座',en:'Cancer',symbol:'♋',emoji:'🦀',start:[6,21],end:[7,22],
+   trait:'家族思いで感情豊か。直感力が鋭い星座。',element:'水'},
+  {name:'獅子座',en:'Leo',symbol:'♌',emoji:'🦁',start:[7,23],end:[8,22],
+   trait:'華やかで存在感抜群。自信に満ちたリーダーの星座。',element:'火'},
+  {name:'乙女座',en:'Virgo',symbol:'♍',emoji:'👩‍🌾',start:[8,23],end:[9,22],
+   trait:'几帳面で分析力が高い。完璧を追求する星座。',element:'土'},
+  {name:'天秤座',en:'Libra',symbol:'♎',emoji:'⚖️',start:[9,23],end:[10,22],
+   trait:'バランス感覚に優れ社交的。公平さを重んじる星座。',element:'風'},
+  {name:'蠍座',en:'Scorpio',symbol:'♏',emoji:'🦂',start:[10,23],end:[11,21],
+   trait:'情熱的で洞察力が深い。強い意志を持つ星座。',element:'水'},
+  {name:'射手座',en:'Sagittarius',symbol:'♐',emoji:'🏹',start:[11,22],end:[12,21],
+   trait:'冒険好きで哲学的。自由を愛する楽観的な星座。',element:'火'},
+];
+
+// 姓名判断：画数テーブル（代表的な漢字）
+const STROKE_TABLE={
+  '一':1,'二':2,'三':3,'四':5,'五':4,'六':4,'七':2,'八':2,'九':2,'十':2,
+  '山':3,'川':3,'田':5,'木':4,'水':4,'火':4,'土':3,'金':8,'日':4,'月':4,
+  '大':3,'小':3,'中':4,'上':3,'下':3,'左':5,'右':5,'北':5,'南':9,'東':8,'西':6,
+  '花':7,'林':8,'森':12,'石':5,'村':7,'島':10,'橋':16,'松':8,'竹':6,'梅':10,
+  '佐':7,'藤':18,'鈴':13,'高':10,'田':5,'渡':12,'伊':6,'中':4,'村':7,'小':3,
+  '加':5,'山':3,'本':5,'井':4,'原':10,'坂':7,'足':7,'長':8,'安':6,'阿':8,
+  '愛':13,'美':9,'恵':10,'幸':8,'奈':8,'由':5,'結':12,'実':8,'優':17,'咲':9,
+  '春':9,'夏':10,'秋':9,'冬':5,'空':8,'海':9,'陸':11,'光':6,'風':9,'星':9,
+  '太':4,'健':11,'勇':9,'翔':12,'拓':8,'駿':17,'瑠':14,'璃':15,'蒼':13,'碧':14,
+  '玲':9,'菜':11,'彩':11,'晴':12,'遥':12,'凪':6,'凛':15,'萌':11,'楓':13,
+  '永':5,'水':4,'木':4,'土':3,'火':4,'風':9,'雷':13,'雪':11,'霞':17,
+  '子':3,'男':7,'女':3,'人':2,'心':4,'手':4,'目':5,'耳':6,'口':3,'足':7,
+  '道':12,'学':8,'文':4,'書':10,'読':14,'話':13,'聞':14,'見':7,'思':9,'知':8,
+  '愉':12,'楽':13,'喜':12,'悲':12,'怒':9,'笑':10,'泣':8,'歌':14,'踊':15,'遊':12,
+  '赤':7,'青':8,'白':5,'黒':11,'緑':14,'黄':11,'紫':12,'桃':10,'橙':16,'茶':9,
+};
+
+function getStrokeCount(char){
+  if(STROKE_TABLE[char])return STROKE_TABLE[char];
+  const code=char.charCodeAt(0);
+  if(code>=0x30A0&&code<=0x30FF)return Math.floor((code-0x30A0)%9+1); // カタカナ
+  if(code>=0x3040&&code<=0x309F)return Math.floor((code-0x3040)%9+1); // ひらがな
+  if(code>=0x4E00&&code<=0x9FFF){
+    // CJK漢字：画数の近似（実際は辞書が必要）
+    const approx=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+    return approx[(code-0x4E00)%approx.length];
+  }
+  return char.length>0?3:0;
+}
+
+const LUCK_TABLE={
+  1:'大吉',2:'吉',3:'中吉',4:'小吉',5:'大吉',6:'吉',7:'吉',8:'大吉',9:'末吉',10:'吉',
+  11:'大吉',12:'中吉',13:'末吉',14:'凶',15:'大吉',16:'大吉',17:'吉',18:'大吉',19:'末吉',
+  20:'末吉',21:'大吉',22:'末吉',23:'吉',24:'大吉',25:'大吉',26:'末吉',27:'吉',28:'末吉',
+  29:'大吉',30:'末吉',31:'大吉',32:'大吉',33:'大吉',34:'凶',35:'大吉',36:'末吉',
+  37:'吉',38:'吉',39:'大吉',40:'末吉',41:'大吉',42:'末吉',43:'末吉',44:'末吉',
+  45:'大吉',46:'末吉',47:'大吉',48:'吉',49:'末吉',50:'末吉',51:'吉',52:'大吉',
+  53:'末吉',54:'末吉',55:'大吉',56:'末吉',57:'吉',58:'末吉',59:'末吉',60:'末吉',
+  61:'大吉',62:'末吉',63:'吉',64:'末吉',65:'大吉',66:'末吉',67:'吉',68:'大吉',
+  69:'末吉',70:'末吉',71:'大吉',72:'吉',73:'吉',74:'末吉',75:'大吉',76:'末吉',
+  77:'大吉',78:'吉',79:'末吉',80:'末吉',81:'大吉',
+};
+function getLuck(n){
+  const m=((n-1)%81)+1;
+  return LUCK_TABLE[m]||'中吉';
+}
+function luckScore(l){return{大吉:5,吉:4,中吉:3,小吉:2,末吉:1,凶:0}[l]||2}
+
+/* ════════════════════════════════════════════
+   UTILITY FUNCTIONS
+════════════════════════════════════════════ */
+function hashNum(str){
+  let h=0;
+  for(let i=0;i<str.length;i++){h=Math.imul(31,h)+str.charCodeAt(i)|0}
+  return Math.abs(h);
+}
+function seededRand(seed,n){return Math.abs(Math.sin(seed*9301+49297)*233280)%n|0}
+
+function getZodiac(month,day){
+  const md=month*100+day;
+  if(md>=1222||md<=119)return ZODIAC[0];
+  if(md>=120&&md<=218)return ZODIAC[1];
+  if(md>=219&&md<=320)return ZODIAC[2];
+  if(md>=321&&md<=419)return ZODIAC[3];
+  if(md>=420&&md<=520)return ZODIAC[4];
+  if(md>=521&&md<=620)return ZODIAC[5];
+  if(md>=621&&md<=722)return ZODIAC[6];
+  if(md>=723&&md<=822)return ZODIAC[7];
+  if(md>=823&&md<=922)return ZODIAC[8];
+  if(md>=923&&md<=1022)return ZODIAC[9];
+  if(md>=1023&&md<=1121)return ZODIAC[10];
+  return ZODIAC[11];
+}
+
+function getAge(birthday){
+  const today=new Date();
+  const b=new Date(birthday);
+  let age=today.getFullYear()-b.getFullYear();
+  const m=today.getMonth()-b.getMonth();
+  if(m<0||(m===0&&today.getDate()<b.getDate()))age--;
+  return age;
+}
+
+function getAgeGroup(age){
+  if(age<=15)return 'hs1';
+  if(age===16)return 'hs2';
+  if(age===17)return 'hs3';
+  return 'adult';
+}
+
+function daysSinceBirth(birthday){
+  const b=new Date(birthday);
+  const today=new Date();
+  return Math.floor((today-b)/(1000*60*60*24));
+}
+
+function biorhythm(days){
+  return{
+    physical:Math.sin(2*Math.PI*days/23),
+    emotional:Math.sin(2*Math.PI*days/28),
+    intellectual:Math.sin(2*Math.PI*days/33),
+  };
+}
+
+/* ════════════════════════════════════════════
+   AGE-BASED MESSAGE TEMPLATES
+════════════════════════════════════════════ */
+const AGE_GREET={
+  hs1:'高校1年生、新しい世界の扉を開いたあなたへ。',
+  hs2:'高校2年生、自分の道を探しているあなたへ。',
+  hs3:'高校3年生、夢に向かって羽ばたくあなたへ。',
+  adult:'輝く未来を切り拓くあなたへ。',
+};
+const NAME_MSGS={
+  大吉:{
+    hs1:'あなたの名前には、強い生命力と無限の可能性が宿っています。高校生活での挑戦がすべて輝かしい経験となるでしょう。まだ見ぬ才能が次々と開花する予感！',
+    hs2:'名前のパワーが進路選択を後押しします。自分が好きなことに正直になって大丈夫。あなたの直感は今、特別に冴えています。',
+    hs3:'名前の運気が最高潮に達しています。受験・就活においても、あなたの誠実さと努力が必ず実を結びます。',
+    adult:'名前が持つ強いエネルギーが、あらゆる目標達成を支えています。新しいステージで存分に力を発揮してください。',
+  },
+  吉:{
+    hs1:'あなたの名前は友人や先生との縁を強める力を持っています。積極的に関わることで運気がさらに上昇します。',
+    hs2:'名前の運気が学習・部活両面でバランスよく働いています。コツコツ続けた努力が報われる時期です。',
+    hs3:'名前が示す運勢は安定した上昇気流。焦らず自分のペースで進むことが成功への鍵です。',
+    adult:'名前の持つ縁結びの力が人間関係・仕事面で良い流れを作っています。',
+  },
+  中吉:{
+    hs1:'名前の運気はゆっくりと成長中。今は種まきの時期。小さな努力が後で大きな花を咲かせます。',
+    hs2:'名前の力が内側で蓄積されています。インプットを大切にして、来るべき飛躍の時に備えましょう。',
+    hs3:'名前の運気が着実に高まっています。焦らず、今できることに全力を注げば必ず道が開けます。',
+    adult:'名前の持つ堅実さが長期的な成功をもたらします。急がず丁寧に取り組むことが吉。',
+  },
+  小吉:{
+    hs1:'名前の運気は静かに流れています。今は観察と学びの時。好奇心を大切にしてください。',
+    hs2:'内省の時期。自分の好きなものを深掘りすることで、個性という最大の武器が磨かれます。',
+    hs3:'焦らなくて大丈夫。名前の運気は必ず上昇します。今の踏ん張りが未来の自分を助けます。',
+    adult:'ゆっくりとした変化が今後の大きな飛躍を準備しています。',
+  },
+  末吉:{
+    hs1:'試練は成長のチャンス。名前の画数が「忍耐力」を象徴しています。乗り越えた先に大きな喜びが待っています。',
+    hs2:'今は修行の時。苦手なことに向き合うことで、名前の持つ底力が目覚めます。',
+    hs3:'今の苦労は必ず財産になります。名前の「末」は「終わりに吉あり」の意味。最後の追い込みで運が開けます。',
+    adult:'試練の先には必ず光があります。名前の持つ粘り強さを信じて進んでください。',
+  },
+  凶:{
+    hs1:'「凶」は転換のサイン。今の苦しさは次のステージへの準備。名前を大切にするほど運気は上向きます。',
+    hs2:'困難は成長の証。この時期を乗り越えた人は、後に大きく飛躍します。諦めないで！',
+    hs3:'最後の難関が待ち受けていますが、これを乗り越えることで大きな力を得られます。',
+    adult:'困難な時期ですが、ここで踏ん張ることが人生の転換点になります。',
+  },
+};
+
+const BIO_MSGS={
+  high:{
+    hs1:'肉体的・精神的コンディションが最高潮！部活や勉強で新記録を狙うチャンスです。積極的にチャレンジを！',
+    hs2:'心身ともに充実した黄金期。この調子で好きなことに全力投球しましょう。',
+    hs3:'受験期に最高のバイオリズム！計画的に勉強すれば、実力を存分に発揮できます。',
+    adult:'仕事・プライベートともに絶好調の時期。重要な決断や挑戦に最適です。',
+  },
+  mid:{
+    hs1:'バランスの良い状態。無理なく様々なことに取り組める安定期です。新しいことを試してみては？',
+    hs2:'着実に進める時期。急がず丁寧に、毎日の積み重ねを大切に。',
+    hs3:'安定したリズムで勉強を続けましょう。コンスタントな努力が最終的に差をつけます。',
+    adult:'安定した時期。日々の業務や人間関係を丁寧に積み重ねましょう。',
+  },
+  low:{
+    hs1:'体や心が休みを求めているサイン。無理をせず、好きなことをしてリフレッシュしましょう。',
+    hs2:'今日はゆっくり充電する日。睡眠と栄養をしっかり取って、明日の自分に力を贈りましょう。',
+    hs3:'疲れが出やすい時期。無理は禁物。短い休憩を上手に取り入れながら乗り切りましょう。',
+    adult:'休養が必要な時期。しっかり休むことが次のパフォーマンス向上につながります。',
+  },
+};
+
+const ZODIAC_MSGS={
+  hs1:'高校1年生のあなた。星座のパワーを借りて、新しい友人や趣味との出会いを楽しみましょう。',
+  hs2:'選択の連続の高2生活。星座の特性を自分の強みとして活かすことで、進路の方向性が見えてきます。',
+  hs3:'勝負の年。星座のエネルギーを集中させ、一点突破で目標を射貫きましょう。',
+  adult:'新たなステージで星座の本来のポテンシャルが解放されます。自分らしく輝いてください。',
+};
+
+const FACE_MSGS=[
+  '目に力がみなぎっています。観察力と洞察力が人並み外れており、場の空気を読む能力が高い。額が広く知性を象徴しています。',
+  '笑顔の筋肉（頬骨周り）が発達した人相。周囲に喜びをもたらす社交力の高さが読み取れます。口角の上がりが幸運を呼び込みます。',
+  '意志の強さを示すしっかりとした眉。目鼻の配置が整っており、バランス感覚に優れた人相です。信頼されるリーダー気質が現れています。',
+  '目の輝きが強い。直感力と感受性の豊かさの表れ。芸術的センスや共感力が高く、人の心を動かす力を持っています。',
+];
+const PALM_MSGS=[
+  '生命線が長く弧を描いており、強い生命力と行動力を示しています。感情線のカーブが深く、豊かな情感の持ち主。知能線がまっすぐで論理的思考の才能あり。',
+  '運命線がくっきりと刻まれており、目標に向かって邁進する力の証。太陽線が入っており、人から注目される運を持っています。財運線も確認でき、経済的な安定を示します。',
+  '感情線が長く小指まで伸びており、人を深く愛する純粋な心の持ち主。生命線と頭脳線の出発点が同じことから、慎重かつ誠実な性格が読み取れます。',
+  '頭脳線が放物線を描き、創造力と想像力の豊かさを物語っています。直感線（第六感線）も見え、鋭い感性の持ち主。ますます才能が開花する相です。',
+];
+
+/* ════════════════════════════════════════════
+   CHAT ENGINE
+════════════════════════════════════════════ */
+let chatData={name:'',lastName:'',firstName:'',birthday:'',faceImg:null,palmImg:null,comment:'',age:0,ageGroup:'hs1'};
+let chatStep=0;
+const TOTAL_STEPS=7;
+
+function setProgress(step){
+  document.getElementById('progress-fill').style.width=`${(step/TOTAL_STEPS)*100}%`;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+}
+
+function startChat(){
+  showScreen('chat');
+  chatStep=0;
+  setProgress(0);
+  setTimeout(()=>nextStep(),300);
+}
+
+const msgs=document.getElementById('chat-messages');
+
+function appendMsg(type,html,delay=0){
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      // Show typing for bot
+      let typingEl=null;
+      if(type==='bot'){
+        typingEl=document.createElement('div');
+        typingEl.className='msg bot';
+        typingEl.innerHTML=`<div class="msg-avatar">🔮</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+        msgs.appendChild(typingEl);
+        msgs.scrollTop=msgs.scrollHeight;
+      }
+      setTimeout(()=>{
+        if(typingEl)typingEl.remove();
+        const el=document.createElement('div');
+        el.className=`msg ${type}`;
+        if(type==='bot'){
+          el.innerHTML=`<div class="msg-avatar">🔮</div><div class="msg-bubble">${html}</div>`;
+        } else {
+          el.innerHTML=`<div class="msg-bubble">${html}</div><div class="msg-avatar">😊</div>`;
+        }
+        msgs.appendChild(el);
+        msgs.scrollTop=msgs.scrollHeight;
+        resolve();
+      },type==='bot'?1000:0);
+    },delay);
+  });
+}
+
+function setInputArea(html){
+  document.getElementById('chat-input-area').innerHTML=html;
+}
+
+function defaultInputArea(){
+  setInputArea(`
+    <div class="input-group">
+      <input type="text" class="chat-input" id="text-input" placeholder="ここに入力してください..." autocomplete="off" onkeydown="if(event.key==='Enter')sendUserInput()">
+      <button class="btn-send" id="send-btn" onclick="sendUserInput()">➤</button>
+    </div>
+  `);
+  document.getElementById('text-input').focus();
+}
+
+function sendUserInput(){
+  const inp=document.getElementById('text-input');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val)return;
+  handleInput(val);
+}
+
+async function nextStep(){
+  chatStep++;
+  setProgress(chatStep);
+  switch(chatStep){
+    case 1: await step1_welcome(); break;
+    case 2: await step2_name(); break;
+    case 3: await step3_birthday(); break;
+    case 4: await step4_face(); break;
+    case 5: await step5_palm(); break;
+    case 6: await step6_comment(); break;
+    case 7: await step7_finish(); break;
+  }
+}
+
+async function step1_welcome(){
+  await appendMsg('bot','こんにちは！✨ 私はCOSMOS FORTUNEの占い師AIです。<br>いくつかの質問に答えていただくだけで、<span class="highlight">姓名判断・バイオリズム・星座・人相・手相</span>を総合した特別な鑑定結果をお届けします。<br><br>占いの裏側にある<span class="highlight2">統計学の秘密</span>も解説しますよ！🌟');
+  await appendMsg('bot','それでは始めましょう！<br>最初の質問です。<br><br>🔤 <span class="highlight">お名前（姓と名）</span>を教えてください。<br><small style="color:var(--text3)">例：山田 太郎</small>');
+  defaultInputArea();
+}
+
+async function step2_name(){
+  await nextStep();
+}
+
+async function step3_birthday(){
+  await appendMsg('bot','素敵なお名前ですね！✨<br><br>次は 🎂 <span class="highlight">生年月日</span>を教えてください。<br>バイオリズムの計算と星座の判定に使用します。<br><small style="color:var(--text3)">（例：2008-04-15）</small>');
+  setInputArea(`
+    <div class="input-group">
+      <input type="text" class="chat-input" id="date-input" placeholder="例：2008/04/15" maxlength="10" inputmode="numeric" onkeydown="if(event.key==='Enter')handleDateInput()">
+      <button class="btn-send" onclick="handleDateInput()">➤</button>
+    </div>
+  `);
+}
+
+async function step4_face(){
+  await appendMsg('bot','ありがとうございます！星座も計算できました⭐<br><br>続いて 👤 <span class="highlight">お顔の写真</span>をアップロードしてください。<br>人相鑑定（フェイスリーディング）に使用します。<br><span style="color:var(--text3);font-size:.85rem">※ 写真はこのアプリ内のみで使用し、外部に送信されません</span>');
+  setInputArea(`
+    <div class="upload-zone" onclick="document.getElementById('face-file').click()">
+      <input type="file" id="face-file" accept="image/*" style="display:none" onchange="handleFaceUpload(event)">
+      <div class="upload-icon">📷</div>
+      <p>ここをタップして顔写真を選ぶ</p>
+    </div>
+    <div class="upload-preview" id="face-preview"></div>
+    <button class="btn-skip" onclick="skipFace()">スキップする（写真なし）</button>
+  `);
+}
+
+async function step5_palm(){
+  await appendMsg('bot','ありがとうございます！✨<br><br>次は ✋ <span class="highlight">手相の写真</span>をアップロードしてください。<br>利き手の手のひらの写真を撮ってください。<br><span style="color:var(--text3);font-size:.85rem">※ 写真はこのアプリ内のみで使用し、外部に送信されません</span>');
+  setInputArea(`
+    <div class="upload-zone" onclick="document.getElementById('palm-file').click()">
+      <input type="file" id="palm-file" accept="image/*" style="display:none" onchange="handlePalmUpload(event)">
+      <div class="upload-icon">🤲</div>
+      <p>ここをタップして手相写真を選ぶ</p>
+    </div>
+    <div class="upload-preview" id="palm-preview"></div>
+    <button class="btn-skip" onclick="skipPalm()">スキップする（写真なし）</button>
+  `);
+}
+
+async function step6_comment(){
+  await appendMsg('bot','準備完了です！🌙<br><br>最後に、<span class="highlight">今のあなたの気持ちや悩み</span>、何でも自由に教えてください。<br>占い結果のカスタマイズに使います。<br><small style="color:var(--text3)">例：「受験が不安です」「好きな人がいます」「部活で頑張りたい」など</small>');
+  setInputArea(`
+    <div class="input-group">
+      <input type="text" class="chat-input" id="text-input" placeholder="自由にどうぞ..." autocomplete="off" onkeydown="if(event.key==='Enter')sendComment()">
+      <button class="btn-send" onclick="sendComment()">➤</button>
+    </div>
+    <button class="btn-skip" onclick="skipComment()">特になし</button>
+  `);
+  document.getElementById('text-input').focus();
+}
+
+async function step7_finish(){
+  await appendMsg('bot','ありがとうございます！✨<br>宇宙の星々があなたの情報を読み解いています...<br>少々お待ちください 🌌');
+  setInputArea('');
+  setTimeout(()=>{
+    document.getElementById('loading').classList.add('active');
+    setTimeout(()=>{
+      document.getElementById('loading').classList.remove('active');
+      showResults();
+    },2800);
+  },800);
+}
+
+function handleInput(val){
+  if(chatStep===1){
+    chatData.name=val;
+    const parts=val.trim().split(/\s+/);
+    chatData.lastName=parts[0]||val;
+    chatData.firstName=parts[1]||'';
+    appendMsg('user',val);
+    nextStep();
+  } else if(chatStep===6){
+    // comment
+  }
+}
+
+function handleDateInput(){
+  const inp=document.getElementById('date-input');
+  if(!inp||!inp.value.trim()){alert('生年月日を入力してください\n例：2008/04/15');return}
+
+  // 区切り文字（/ - . 年月日）を正規化して YYYY-MM-DD に変換
+  const raw=inp.value.trim()
+    .replace(/[年]/g,'-').replace(/[月]/g,'-').replace(/[日]/g,'')
+    .replace(/[./・]/g,'-').replace(/\s+/g,'');
+  const parts=raw.split('-').map(s=>s.replace(/\D/g,''));
+
+  if(parts.length!==3){alert('形式が正しくありません\n例：2008/04/15');return}
+
+  const [y,m,d]=[parseInt(parts[0]),parseInt(parts[1]),parseInt(parts[2])];
+  if(isNaN(y)||isNaN(m)||isNaN(d)||y<1900||y>new Date().getFullYear()||m<1||m>12||d<1||d>31){
+    alert('正しい生年月日を入力してください\n例：2008/04/15');return;
+  }
+
+  const iso=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const dateObj=new Date(iso);
+  if(isNaN(dateObj.getTime())||dateObj>new Date()){
+    alert('正しい生年月日を入力してください');return;
+  }
+
+  chatData.birthday=iso;
+  chatData.age=getAge(iso);
+  chatData.ageGroup=getAgeGroup(chatData.age);
+  const str=`${y}年${m}月${d}日`;
+  appendMsg('user',str);
+  nextStep();
+}
+
+function handleFaceUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    chatData.faceImg=ev.target.result;
+    const preview=document.getElementById('face-preview');
+    preview.style.display='block';
+    preview.innerHTML=`<img src="${ev.target.result}" alt="顔写真">`;
+    setTimeout(()=>{
+      appendMsg('user','📷 顔写真をアップロードしました');
+      nextStep();
+    },500);
+  };
+  reader.readAsDataURL(file);
+}
+function skipFace(){chatData.faceImg=null;appendMsg('user','スキップします');nextStep()}
+
+function handlePalmUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    chatData.palmImg=ev.target.result;
+    const preview=document.getElementById('palm-preview');
+    preview.style.display='block';
+    preview.innerHTML=`<img src="${ev.target.result}" alt="手相写真">`;
+    setTimeout(()=>{
+      appendMsg('user','🤲 手相写真をアップロードしました');
+      nextStep();
+    },500);
+  };
+  reader.readAsDataURL(file);
+}
+function skipPalm(){chatData.palmImg=null;appendMsg('user','スキップします');nextStep()}
+
+function sendComment(){
+  const inp=document.getElementById('text-input');
+  const val=inp?inp.value.trim():'';
+  chatData.comment=val||'特になし';
+  appendMsg('user',val||'特になし');
+  nextStep();
+}
+function skipComment(){chatData.comment='特になし';appendMsg('user','特になし');nextStep()}
+
+/* ════════════════════════════════════════════
+   RESULTS GENERATION
+════════════════════════════════════════════ */
+function calcName(){
+  const full=chatData.name.replace(/\s/g,'');
+  let total=0,lastTotal=0,firstTotal=0;
+  const chars=[...full];
+  const strokes=chars.map(c=>getStrokeCount(c));
+  const lastChars=[...chatData.lastName];
+  const firstChars=[...chatData.firstName];
+  lastChars.forEach(c=>lastTotal+=getStrokeCount(c));
+  firstChars.forEach(c=>firstTotal+=getStrokeCount(c));
+  strokes.forEach(s=>total+=s);
+
+  const tenKaku=lastTotal;
+  const jinKaku=lastChars.length>0&&firstChars.length>0?getStrokeCount(lastChars[lastChars.length-1])+getStrokeCount(firstChars[0]):lastTotal;
+  const chiKaku=firstTotal||1;
+  const gaiKaku=(tenKaku+total-jinKaku)||1;
+  const souKaku=total;
+
+  return{
+    chars,strokes,
+    tenKaku,jinKaku,chiKaku,gaiKaku,souKaku,
+    tenLuck:getLuck(tenKaku),jinLuck:getLuck(jinKaku),
+    chiLuck:getLuck(chiKaku),gaiLuck:getLuck(gaiKaku),souLuck:getLuck(souKaku),
+    mainLuck:getLuck(souKaku),
+  };
+}
+
+function showResults(){
+  showScreen('results');
+  const el=document.getElementById('results');
+
+  const n=calcName();
+  const age=chatData.age;
+  const ag=chatData.ageGroup;
+  const days=daysSinceBirth(chatData.birthday);
+  const bio=biorhythm(days);
+  const bd=new Date(chatData.birthday);
+  const zodiac=getZodiac(bd.getMonth()+1,bd.getDate());
+  const seed=hashNum(chatData.name+chatData.birthday);
+  const faceMsg=FACE_MSGS[seededRand(seed,4)];
+  const palmMsg=PALM_MSGS[seededRand(seed+1,4)];
+
+  // Overall fortune score
+  const nameScore=luckScore(n.souLuck);
+  const bioScore=Math.round((bio.physical+bio.emotional+bio.intellectual)/3*2+3);
+  const totalScore=Math.round((nameScore+bioScore+seededRand(seed+2,3)+2)/3);
+  const overallList=['大吉','大吉','吉','吉','中吉'];
+  const overallLuck=overallList[Math.min(4,5-totalScore)];
+  const overallEmoji={大吉:'🌟',吉:'✨',中吉:'⭐',小吉:'🌙',末吉:'🍀'}[overallLuck]||'⭐';
+
+  // Biorhythm level
+  const bioAvg=(bio.physical+bio.emotional+bio.intellectual)/3;
+  const bioLevel=bioAvg>0.3?'high':bioAvg>-0.3?'mid':'low';
+  const bioMsg=BIO_MSGS[bioLevel][ag];
+
+  // Age-group greeting
+  const ageGreet=AGE_GREET[ag];
+  const nameMsg=NAME_MSGS[n.souLuck]?.[ag]||NAME_MSGS['中吉'][ag];
+
+  const overallMsg={
+    大吉:`${ageGreet}宇宙があなたに最高の祝福を送っています！姓名・バイオリズム・星座——すべての要素が今のあなたを後押ししています。自分を信じて大きな一歩を踏み出してください🌟`,
+    吉:`${ageGreet}星々があなたの歩みを応援しています。着実に前進する力と周囲との良縁に恵まれた時期。積極的な行動が運を引き寄せます✨`,
+    中吉:`${ageGreet}今は準備と積み重ねの時期。焦らず丁寧に歩むことで、やがて大きな運の扉が開きます。日々の小さな努力を大切に⭐`,
+    小吉:`${ageGreet}静かなエネルギーが内側で育っています。今は自分を知る大切な時期。インプットと内省を重ねることで、次のステージへの準備が整います🌙`,
+    末吉:`${ageGreet}試練の中にこそ、あなたの本当の強さが眠っています。「末吉」は「終わりに向かって吉が来る」こと。今の踏ん張りが必ず未来を変えます🍀`,
+  }[overallLuck]||'宇宙はあなたを見守っています。';
+
+  // Build HTML
+  el.innerHTML=`
+    <div class="results-hero">
+      <div class="results-name">${chatData.name}</div>
+      <div class="results-meta">
+        ${age}歳 &nbsp;｜&nbsp; ${zodiac.name} ${zodiac.symbol} &nbsp;｜&nbsp;
+        ${bd.getFullYear()}年${bd.getMonth()+1}月${bd.getDate()}日生まれ
+      </div>
+      <div class="overall-fortune">
+        <div class="fortune-emoji">${overallEmoji}</div>
+        <div class="fortune-title">総合運：${overallLuck}</div>
+        <div class="fortune-message">${overallMsg}</div>
+      </div>
+    </div>
+
+    <div class="results-grid">
+
+      <!-- ① 姓名判断 -->
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-icon">📝</div>
+          <div class="card-title">姓名判断</div>
+          <div class="card-badge ${luckScore(n.souLuck)>=4?'badge-great':luckScore(n.souLuck)>=3?'badge-good':'badge-mid'}">${n.souLuck}</div>
+        </div>
+        <div class="card-body">
+          <div class="strokes-display">
+            ${n.chars.map((c,i)=>`
+              <div class="stroke-item">
+                <div class="stroke-char">${c}</div>
+                <div class="stroke-num">${n.strokes[i]}画</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="gaku-bar">
+            <div class="gaku-item"><div class="gaku-name">天格</div><div class="gaku-num">${n.tenKaku}</div><div class="gaku-luck">${n.tenLuck}</div></div>
+            <div class="gaku-item"><div class="gaku-name">人格</div><div class="gaku-num">${n.jinKaku}</div><div class="gaku-luck">${n.jinLuck}</div></div>
+            <div class="gaku-item"><div class="gaku-name">地格</div><div class="gaku-num">${n.chiKaku}</div><div class="gaku-luck">${n.chiLuck}</div></div>
+            <div class="gaku-item"><div class="gaku-name">外格</div><div class="gaku-num">${n.gaiKaku}</div><div class="gaku-luck">${n.gaiLuck}</div></div>
+            <div class="gaku-item"><div class="gaku-name">総格</div><div class="gaku-num">${n.souKaku}</div><div class="gaku-luck">${n.souLuck}</div></div>
+          </div>
+          <div class="fortune-text">${nameMsg}</div>
+          <div class="stat-box">
+            <div class="stat-box-title">📊 統計学的解説：姓名判断の仕組み</div>
+            <p>姓名判断は<span class="highlight">漢字の画数</span>を5つの格（天格・人格・地格・外格・総格）に分け、数値ごとの吉凶を判定する日本独自の占い体系です（熊崎健翁が大正時代に体系化）。<br><br>
+            統計学的には、特定の画数の人が統計的に成功しているかを検証した大規模研究はなく、現代科学では「<span class="highlight2">確証バイアス</span>（信じたい情報ばかり目に入る心理効果）」や「<span class="highlight2">バーナム効果</span>（誰にでも当てはまる文章を自分のことと感じる効果）」で説明されます。しかしだからこそ、「名前を大切にする」という行動が自己肯定感を高め、実際の行動変容につながることもあります。名前への敬意は確かな価値を持ちます。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② バイオリズム -->
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-icon">💓</div>
+          <div class="card-title">バイオリズム分析</div>
+          <div class="card-badge ${bioLevel==='high'?'badge-great':bioLevel==='mid'?'badge-good':'badge-mid'}">${bioLevel==='high'?'絶好調':bioLevel==='mid'?'安定':'充電期'}</div>
+        </div>
+        <div class="card-body">
+          <div class="bio-chart-wrap">
+            <canvas id="bio-canvas" height="160"></canvas>
+          </div>
+          <div class="bio-legend">
+            <div class="bio-legend-item"><div class="bio-dot" style="background:#ef4444"></div>肉体リズム（23日周期）</div>
+            <div class="bio-legend-item"><div class="bio-dot" style="background:#06b6d4"></div>感情リズム（28日周期）</div>
+            <div class="bio-legend-item"><div class="bio-dot" style="background:#f59e0b"></div>知性リズム（33日周期）</div>
+          </div>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;text-align:center">
+            <div style="padding:.75rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px">
+              <div style="color:#ef4444;font-weight:700;font-size:1.2rem">${Math.round(bio.physical*100)}%</div>
+              <div style="font-size:.75rem;color:var(--text2)">肉体</div>
+            </div>
+            <div style="padding:.75rem;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);border-radius:10px">
+              <div style="color:#06b6d4;font-weight:700;font-size:1.2rem">${Math.round(bio.emotional*100)}%</div>
+              <div style="font-size:.75rem;color:var(--text2)">感情</div>
+            </div>
+            <div style="padding:.75rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px">
+              <div style="color:#f59e0b;font-weight:700;font-size:1.2rem">${Math.round(bio.intellectual*100)}%</div>
+              <div style="font-size:.75rem;color:var(--text2)">知性</div>
+            </div>
+          </div>
+          <div class="fortune-text" style="margin-top:1rem">${bioMsg}</div>
+          <div class="stat-box">
+            <div class="stat-box-title">📊 統計学的解説：バイオリズムの数学</div>
+            <p>バイオリズムは19世紀末にヴィルヘルム・フリースが発見し、23日・28日・33日の3つの<span class="highlight">正弦波（サイン波）</span>で人間の状態を表すモデルです。<br><br>
+            数式は <span class="highlight2">sin(2π × 経過日数 ÷ 周期)</span> で、値は -1〜+1 の範囲で変動します。今日のあなたの肉体リズムは生まれてから<span class="highlight">${days}日目</span>のデータです。<br><br>
+            科学的には1980年代の研究で「バイオリズムと実際のパフォーマンスの相関は統計的に有意ではない」とされています。しかし<span class="highlight2">周期的なセルフモニタリング（自己観察）</span>の習慣づけには効果があり、正弦波の数学的美しさを体感できる教材としても優れています。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ 星座 -->
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-icon">⭐</div>
+          <div class="card-title">星座占い</div>
+          <div class="card-badge badge-good">${zodiac.name}</div>
+        </div>
+        <div class="card-body">
+          <div class="zodiac-card-inner">
+            <div class="zodiac-symbol">${zodiac.emoji}</div>
+            <div class="zodiac-info">
+              <div class="zodiac-name">${zodiac.name}（${zodiac.en}）${zodiac.symbol}</div>
+              <div class="zodiac-dates">エレメント：${zodiac.element}　／　${zodiac.trait}</div>
+            </div>
+          </div>
+          <div class="fortune-text" style="margin-top:1rem">${ZODIAC_MSGS[ag]}<br><br>
+          ${zodiac.name}の今月のテーマは<span class="highlight">「${['自己発見','縁を育む','目標への集中','感謝と前進','変化を受け入れる'][seededRand(seed+3,5)]}」</span>。${['コミュニケーションを大切に。話しかけることで思わぬ縁が生まれます。','新しい趣味や分野に足を踏み込むチャンスです。','得意なことをさらに深掘りして、圧倒的な強みにしましょう。','今の悩みは半年後の成長の糧になっています。','身近な人への感謝の言葉が、あなた自身の運気を高めます。'][seededRand(seed+4,5)]}</div>
+          <div class="stat-box">
+            <div class="stat-box-title">📊 統計学的解説：星座と心理学</div>
+            <p>西洋占星術では、太陽が12の星座（黄道帯）のどこを通過しているかで性格・運勢を判断します。<br><br>
+            1948年、心理学者バートラム・フォアが行った実験では、人は<span class="highlight">誰にでも当てはまる曖昧な記述</span>を「自分だけのこと」と信じやすいことを発見。これを<span class="highlight2">「バーナム効果」</span>と呼びます。<br><br>
+            また、1985年にショーン・カールソンが行った二重盲検試験では、占星術師が偶然より高い確率で性格を当てることはできないと示されました。しかし、星座を知ることで<span class="highlight2">自己理解のフレームワーク</span>として活用できるという側面もあります。12種類の分類は<span class="highlight">クラスタリング（分類分析）</span>の基礎的考え方に通じています。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ 人相 -->
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <div class="card-title">人相鑑定</div>
+          <div class="card-badge badge-great">鑑定完了</div>
+        </div>
+        <div class="card-body">
+          <div class="img-analysis">
+            ${chatData.faceImg
+              ? `<div class="img-upload-display"><img src="${chatData.faceImg}" alt="顔写真"></div>`
+              : `<div class="img-no-upload"><span style="font-size:2rem">📷</span><span>写真なし</span></div>`
+            }
+            <div>
+              <div class="fortune-text" style="font-size:.9rem">${faceMsg}</div>
+              <div style="margin-top:.75rem;font-size:.85rem;color:var(--text2)">
+                ラッキーポイント：<span class="highlight">${['目力','笑顔','落ち着いた雰囲気','知的な印象','温かみ'][seededRand(seed+5,5)]}</span>
+              </div>
+            </div>
+          </div>
+          <div class="ai-technique-box" style="margin-top:1rem">
+            <div class="ai-technique-title">🤖 AIが顔写真を分析する技術（コンピュータビジョン）</div>
+            <ul class="ai-technique-list">
+              <li><strong>顔検出（Face Detection）</strong>：Haar Cascade や MTCNN などのアルゴリズムが画像中の顔領域を特定。目・鼻・口の68点の「ランドマーク」を検出します。</li>
+              <li><strong>ディープラーニング（CNN）</strong>：畳み込みニューラルネットワークが、数百万枚の学習データから顔の特徴パターンを自動抽出します。</li>
+              <li><strong>感情認識</strong>：笑顔・怒り・驚きなど7種類の表情を、口角や眉の角度などの特徴量から分類します（Emotion Recognition）。</li>
+              <li><strong>年齢・性別推定</strong>：骨格や皮膚の特徴を統計モデルで分析し、年齢層や性別を推定します。精度は研究で約80-85%とされています。</li>
+              <li><strong>プライバシーと倫理</strong>：このアプリは画像を外部サーバーに送信しません。AIによる顔認証技術は便利ですが、同意なき収集は個人情報保護法に抵触します。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ 手相 -->
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-icon">✋</div>
+          <div class="card-title">手相鑑定</div>
+          <div class="card-badge badge-good">鑑定完了</div>
+        </div>
+        <div class="card-body">
+          <div class="img-analysis">
+            ${chatData.palmImg
+              ? `<div class="img-upload-display"><img src="${chatData.palmImg}" alt="手相写真"></div>`
+              : `<div class="img-no-upload"><span style="font-size:2rem">🤲</span><span>写真なし</span></div>`
+            }
+            <div>
+              <div class="fortune-text" style="font-size:.9rem">${palmMsg}</div>
+              <div style="margin-top:.75rem">
+                <span class="highlight">今月の開運キーワード：</span>
+                <span class="highlight2">${['行動力','感謝','集中','縁','創造'][seededRand(seed+6,5)]}</span>
+              </div>
+            </div>
+          </div>
+          <div class="ai-technique-box" style="margin-top:1rem">
+            <div class="ai-technique-title">🔬 手相をAIで解析する技術（パターン認識）</div>
+            <ul class="ai-technique-list">
+              <li><strong>皮膚紋様学（Dermatoglyphics）</strong>：手のひらの紋様（指紋・掌紋）を科学的に研究する実際の学問。染色体異常の診断にも活用されています。</li>
+              <li><strong>画像前処理</strong>：グレースケール変換→ガウシアンぼかし→エッジ検出（Cannyアルゴリズム）で手相線を抽出します。</li>
+              <li><strong>線の検出（ハフ変換）</strong>：数学的手法で直線・曲線を検出。生命線・感情線・知能線の位置・長さ・カーブを数値化します。</li>
+              <li><strong>機械学習による分類</strong>：SVM（サポートベクターマシン）や Random Forest で手相パターンをカテゴリに分類。学習データの質が精度を左右します。</li>
+              <li><strong>統計的信頼性</strong>：手相と性格・運命の相関を大規模に調査した研究では、統計的に有意な関係は確認されていません。ただし「手を観察する」行為自体が自己理解の入口になります。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑥ 統計まとめ -->
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-icon">📈</div>
+          <div class="card-title">統計学と占い：総合解説</div>
+        </div>
+        <div class="card-body">
+          <div class="fortune-text">
+            ${chatData.comment&&chatData.comment!=='特になし'
+              ? `「<span class="highlight">${chatData.comment}</span>」というあなたの想いを受け取りました。その気持ちは、すでに未来を変える第一歩です。<br><br>`
+              : ''
+            }
+            占いは「<span class="highlight">自分を見つめ直すための鏡</span>」です。科学的に証明されていない部分も多いですが、だからこそ大切なことがあります。
+          </div>
+
+          <div style="margin:1.5rem 0">
+            <div style="font-size:.85rem;color:var(--text2);margin-bottom:.75rem;letter-spacing:.1em">■ 占いと統計学の関係マップ</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.85rem">
+              <div style="padding:1rem;background:rgba(124,58,237,0.1);border:1px solid var(--border);border-radius:12px">
+                <div style="color:var(--primary-light);font-weight:700;margin-bottom:.5rem">占いの要素</div>
+                <div style="color:var(--text2);line-height:1.8">姓名判断 → 数値計算<br>バイオリズム → 正弦関数<br>星座 → 統計的分類<br>人相・手相 → パターン認識</div>
+              </div>
+              <div style="padding:1rem;background:rgba(6,182,212,0.1);border:1px solid var(--border2);border-radius:12px">
+                <div style="color:var(--secondary-light);font-weight:700;margin-bottom:.5rem">統計学の道具</div>
+                <div style="color:var(--text2);line-height:1.8">加算・合計 → 記述統計<br>周期関数 → 時系列分析<br>クラスタリング → 分類<br>CNN・SVM → 機械学習</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-box">
+            <div class="stat-box-title">📊 占いと心理学の重要概念3選</div>
+            <p>
+            <span class="highlight">① バーナム効果（フォアラー効果）</span><br>
+            「あなたは他人には見せない一面を持っています」のような、誰にでも当てはまる文章を自分だけのことと感じる心理。1948年の実験で、学生に「あなただけの性格診断」として同じ文章を渡したところ、平均85%の学生が「よく当たっている」と回答しました。<br><br>
+            <span class="highlight">② 確証バイアス（Confirmation Bias）</span><br>
+            人は自分の信念を支持する情報を無意識に優先的に探し、反する情報を無視する傾向があります。「今日は運勢が良い」と思うと良いことだけが目に入りやすくなります。これはデータ分析でも要注意の落とし穴です。<br><br>
+            <span class="highlight">③ セルフフルフィリング・プロフェシー（自己成就予言）</span><br>
+            「うまくいく」と信じると行動が変わり、実際にうまくいく確率が上がる現象。「大吉！」と聞いた人が前向きに行動した結果、本当に良い結果を引き寄せることがあります。占いが「やる気スイッチ」になる効果は実在します。
+            </p>
+          </div>
+
+          <div class="stat-box" style="border-left-color:var(--accent);margin-top:1rem">
+            <div class="stat-box-title" style="color:var(--accent)">🎓 データサイエンスへの入口</div>
+            <p>この占いアプリで使った技術は、すべて現代のデータサイエンス・AI開発に直結しています：<br><br>
+            <span class="highlight2">バイオリズム計算</span> → 信号処理・フーリエ解析<br>
+            <span class="highlight2">画数の集計・判定</span> → データ集計・条件分岐ロジック<br>
+            <span class="highlight2">顔・手相の画像認識</span> → コンピュータビジョン・深層学習<br>
+            <span class="highlight2">星座の分類</span> → 機械学習のクラス分類問題<br><br>
+            データサイエンティストは「データから意味を読み取る」プロフェッショナル。プログラミングや統計学を学ぶことで、未来を予測する本物の力が身につきます📡</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="results-footer">
+      <div style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">この鑑定結果は${new Date().toLocaleDateString('ja-JP')}のものです</div>
+      <button class="restart-btn" onclick="restart()">🔮 もう一度占う</button>
+      <div class="school-badge" style="margin-top:1.5rem">長久手高校 PTA 2025 文化祭 ✧ COSMOS FORTUNE</div>
+    </div>
+  `;
+
+  // Draw biorhythm chart
+  setTimeout(()=>drawBioChart(days),100);
+}
+
+/* ════════════════════════════════════════════
+   BIORHYTHM CANVAS CHART
+════════════════════════════════════════════ */
+function drawBioChart(totalDays){
+  const canvas=document.getElementById('bio-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||300;
+  const H=160;
+  canvas.width=W;canvas.height=H;
+
+  const padL=40,padR=10,padT=15,padB=25;
+  const chartW=W-padL-padR;
+  const chartH=H-padT-padB;
+  const cx=padL+chartW/2;
+  const cy=padT+chartH/2;
+  const days=30; // show ±15 days
+
+  // Background
+  ctx.fillStyle='rgba(0,0,0,0.4)';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid lines
+  ctx.strokeStyle='rgba(255,255,255,0.05)';
+  ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=padT+i*(chartH/4);
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+chartW,y);ctx.stroke();
+  }
+  for(let i=0;i<=6;i++){
+    const x=padL+i*(chartW/6);
+    ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,padT+chartH);ctx.stroke();
+  }
+
+  // Zero line
+  ctx.strokeStyle='rgba(255,255,255,0.2)';
+  ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(padL,cy);ctx.lineTo(padL+chartW,cy);ctx.stroke();
+
+  // Today line
+  ctx.strokeStyle='rgba(255,255,255,0.5)';
+  ctx.setLineDash([4,4]);
+  ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,padT);ctx.lineTo(cx,padT+chartH);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.font='10px sans-serif';
+  ctx.fillText('今日',cx+4,padT+12);
+
+  // Draw curves
+  const curves=[
+    {period:23,color:'#ef4444'},
+    {period:28,color:'#06b6d4'},
+    {period:33,color:'#f59e0b'},
+  ];
+  curves.forEach(({period,color})=>{
+    ctx.strokeStyle=color;
+    ctx.lineWidth=2.5;
+    ctx.shadowColor=color;
+    ctx.shadowBlur=6;
+    ctx.beginPath();
+    for(let px=0;px<chartW;px++){
+      const d=totalDays-days/2+px*(days/chartW);
+      const v=Math.sin(2*Math.PI*d/period);
+      const x=padL+px;
+      const y=cy-v*(chartH/2-4);
+      px===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur=0;
+  });
+
+  // Today dots
+  curves.forEach(({period,color})=>{
+    const v=Math.sin(2*Math.PI*totalDays/period);
+    const y=cy-v*(chartH/2-4);
+    ctx.beginPath();
+    ctx.arc(cx,y,5,0,Math.PI*2);
+    ctx.fillStyle=color;
+    ctx.shadowColor=color;ctx.shadowBlur=10;
+    ctx.fill();
+    ctx.shadowBlur=0;
+  });
+
+  // X axis labels
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='9px sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('-15日',padL,padT+chartH+14);
+  ctx.fillText('+15日',padL+chartW,padT+chartH+14);
+  ctx.fillText('今日',cx,padT+chartH+14);
+
+  // Y axis labels
+  ctx.textAlign='right';
+  ctx.fillText('+100%',padL-4,padT+8);
+  ctx.fillText('0%',padL-4,cy+4);
+  ctx.fillText('-100%',padL-4,padT+chartH);
+}
+
+/* ════════════════════════════════════════════
+   RESTART
+════════════════════════════════════════════ */
+function restart(){
+  chatData={name:'',lastName:'',firstName:'',birthday:'',faceImg:null,palmImg:null,comment:'',age:0,ageGroup:'hs1'};
+  chatStep=0;
+  document.getElementById('chat-messages').innerHTML='';
+  document.getElementById('results').innerHTML='';
+  showScreen('intro');
+}
+</script>
+</body>
+</html>
