@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COSMOS FORTUNE ✧ 統計占い | 長久手高校PTA</title>
+<title>COSMOS FORTUNE ✧ 統計占い（完全統計版） | 長久手高校PTA</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -26,11 +26,9 @@ body{
 }
 #stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
-/* ── SCREENS ── */
 .screen{display:none;position:relative;z-index:1;min-height:100vh}
 .screen.active{display:flex}
 
-/* ── INTRO ── */
 #intro{
   flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:2rem;
@@ -50,8 +48,17 @@ body{
   margin-bottom:.5rem;text-shadow:none}
 .intro-subtitle{color:var(--text2);font-size:1rem;margin-bottom:.5rem;letter-spacing:.2em}
 .intro-tagline{
-  color:var(--text2);font-size:.9rem;max-width:480px;margin:1rem auto 2rem;
+  color:var(--text2);font-size:.9rem;max-width:520px;margin:1rem auto 2rem;
   line-height:1.8;
+}
+.privacy-badge{
+  background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(6,182,212,0.2));
+  border:1px solid var(--success);border-radius:12px;
+  padding:1rem;margin:2rem auto;max-width:500px;
+  font-size:.85rem;color:var(--text2);
+}
+.privacy-badge-title{
+  color:var(--success);font-weight:700;margin-bottom:.5rem;letter-spacing:.1em;
 }
 .btn{
   display:inline-block;padding:.9rem 2.5rem;border-radius:50px;
@@ -67,7 +74,6 @@ body{
   margin-top:2rem;color:var(--text3);font-size:.8rem;letter-spacing:.15em;
 }
 
-/* ── CHAT ── */
 #chat{flex-direction:column;max-width:700px;margin:0 auto;padding:1rem;width:100%}
 .chat-header{
   text-align:center;padding:1.5rem 1rem 1rem;
@@ -156,22 +162,19 @@ body{
 .upload-zone p{color:var(--text2);font-size:.9rem}
 .upload-preview{
   display:none;border-radius:12px;overflow:hidden;max-height:200px;
-  border:1px solid var(--border);
+  border:1px solid var(--border);position:relative;
 }
 .upload-preview img{width:100%;height:200px;object-fit:cover}
+.analysis-status{
+  position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.7);
+  padding:.5rem 1rem;border-radius:8px;font-size:.8rem;color:var(--success);
+}
 .btn-skip{
   background:transparent;border:1px solid var(--border);color:var(--text2);
   padding:.6rem 1.5rem;border-radius:20px;cursor:pointer;font-size:.85rem;
   transition:all .3s;font-family:inherit;width:fit-content;margin:0 auto;
 }
 .btn-skip:hover{border-color:var(--primary-light);color:var(--text)}
-.choice-btns{display:flex;gap:.5rem;flex-wrap:wrap}
-.btn-choice{
-  padding:.6rem 1.2rem;border-radius:20px;border:1px solid var(--border);
-  background:rgba(255,255,255,0.03);color:var(--text);cursor:pointer;
-  font-size:.9rem;transition:all .3s;font-family:inherit;
-}
-.btn-choice:hover{border-color:var(--primary);background:rgba(124,58,237,0.15)}
 
 .typing-indicator{
   display:flex;gap:4px;align-items:center;padding:.7rem 1rem;
@@ -186,7 +189,6 @@ body{
 .typing-dot:nth-child(3){animation-delay:.3s}
 @keyframes typing{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-6px);opacity:1}}
 
-/* ── RESULTS ── */
 #results{flex-direction:column;padding:0}
 .results-hero{
   text-align:center;padding:3rem 2rem 2rem;
@@ -249,50 +251,12 @@ body{
 }
 .stat-box p{color:var(--text2);font-size:.88rem;line-height:1.8}
 
-/* Biorhythm chart */
-.bio-chart-wrap{margin:1rem 0;border-radius:12px;overflow:hidden;background:rgba(0,0,0,0.4)}
-#bio-canvas{width:100%;display:block}
-.bio-legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem;font-size:.85rem}
-.bio-legend-item{display:flex;align-items:center;gap:.4rem}
-.bio-dot{width:12px;height:12px;border-radius:50%}
-
-/* Zodiac */
-.zodiac-card-inner{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
-.zodiac-symbol{
-  font-size:4rem;width:80px;height:80px;
-  display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle,rgba(124,58,237,0.2),transparent);
-  border:1px solid var(--border);border-radius:50%;flex-shrink:0;
-}
-.zodiac-info{flex:1}
-.zodiac-name{font-size:1.4rem;font-weight:700}
-.zodiac-dates{color:var(--text2);font-size:.85rem;margin-bottom:.5rem}
-
-/* Name strokes */
-.strokes-display{
-  display:flex;gap:.5rem;align-items:flex-end;flex-wrap:wrap;margin:1rem 0;
-}
-.stroke-item{
-  text-align:center;padding:.75rem 1rem;
-  background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid var(--border);
-}
-.stroke-char{font-size:1.4rem;font-weight:700}
-.stroke-num{font-size:.8rem;color:var(--primary-light);margin-top:.2rem}
-.stroke-label{font-size:.7rem;color:var(--text3)}
-.gaku-bar{display:flex;gap:.5rem;margin:1rem 0;flex-wrap:wrap}
-.gaku-item{flex:1;min-width:100px;padding:.75rem;border-radius:10px;
-  background:rgba(0,0,0,0.3);border:1px solid var(--border);text-align:center}
-.gaku-name{font-size:.75rem;color:var(--text3);margin-bottom:.2rem}
-.gaku-num{font-size:1.3rem;font-weight:700;color:var(--accent-light)}
-.gaku-luck{font-size:.75rem;color:var(--text2)}
-
-/* Image analysis */
 .img-analysis{
   display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;
 }
 .img-upload-display{
   border-radius:12px;overflow:hidden;border:1px solid var(--border);
-  max-height:180px;
+  max-height:180px;position:relative;
 }
 .img-upload-display img{width:100%;height:180px;object-fit:cover}
 .img-no-upload{
@@ -300,31 +264,44 @@ body{
   background:rgba(0,0,0,0.3);border:1px dashed var(--border);border-radius:12px;
   color:var(--text3);font-size:.85rem;gap:.5rem;
 }
-.ai-technique-box{
+.analysis-info{
   padding:1rem;background:rgba(0,0,0,0.3);border-radius:12px;
   border-left:3px solid var(--accent);
 }
-.ai-technique-title{font-size:.8rem;color:var(--accent);letter-spacing:.15em;margin-bottom:.5rem;font-weight:700}
-.ai-technique-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
-.ai-technique-list li{
+.analysis-info-title{font-size:.8rem;color:var(--accent);letter-spacing:.15em;margin-bottom:.5rem;font-weight:700}
+.analysis-info-list{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.analysis-info-list li{
   font-size:.82rem;color:var(--text2);
   display:flex;align-items:flex-start;gap:.4rem;line-height:1.6;
 }
-.ai-technique-list li::before{content:"▸";color:var(--accent);flex-shrink:0;margin-top:.1rem}
+.analysis-info-list li::before{content:"▸";color:var(--accent);flex-shrink:0;margin-top:.1rem}
 
-/* Stat explanation */
-.stat-chart{display:flex;gap:.5rem;align-items:flex-end;height:80px;margin:1rem 0}
-.stat-bar{
-  flex:1;border-radius:4px 4px 0 0;
-  background:linear-gradient(180deg,var(--primary),var(--secondary));
-  min-width:20px;position:relative;transition:height .8s ease;
+.privacy-notice{
+  background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(6,182,212,0.1));
+  border:1px solid var(--success);border-radius:12px;
+  padding:1.25rem;margin-top:1.5rem;
 }
-.stat-bar-label{
-  position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
-  font-size:.65rem;color:var(--text3);white-space:nowrap;
+.privacy-notice-title{
+  color:var(--success);font-weight:700;margin-bottom:.75rem;
+  letter-spacing:.1em;font-size:.9rem;
+}
+.privacy-notice-text{
+  font-size:.85rem;color:var(--text2);line-height:1.8;
 }
 
-/* Share */
+.statistical-notice{
+  background:linear-gradient(135deg,rgba(6,182,212,0.1),rgba(124,58,237,0.1));
+  border:1px solid var(--secondary);border-radius:12px;
+  padding:1.25rem;margin-top:1rem;
+}
+.statistical-notice-title{
+  color:var(--secondary);font-weight:700;margin-bottom:.75rem;
+  letter-spacing:.1em;font-size:.9rem;
+}
+.statistical-notice-text{
+  font-size:.85rem;color:var(--text2);line-height:1.8;
+}
+
 .results-footer{text-align:center;padding:2rem;border-top:1px solid var(--border)}
 .restart-btn{
   display:inline-block;padding:1rem 3rem;border-radius:50px;
@@ -334,20 +311,10 @@ body{
 }
 .restart-btn:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(124,58,237,0.8)}
 
-/* Utility */
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:1rem 0}
 .highlight{color:var(--accent-light);font-weight:700}
 .highlight2{color:var(--secondary-light);font-weight:700}
 
-/* Responsive */
-@media(max-width:500px){
-  .img-analysis{grid-template-columns:1fr}
-  .zodiac-card-inner{flex-direction:column;align-items:flex-start}
-  .gaku-bar{gap:.3rem}
-  .gaku-item{min-width:80px}
-}
-
-/* Loading */
 #loading{
   display:none;position:fixed;inset:0;z-index:100;
   background:var(--bg);align-items:center;justify-content:center;
@@ -361,43 +328,42 @@ body{
   border:2px solid var(--primary-light);
   display:flex;align-items:center;justify-content:center;font-size:2rem;
 }
-@keyframes orb-pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.3);opacity:1}}
-.loading-text{color:var(--text2);font-size:1rem;letter-spacing:.2em;animation:fade-pulse 1.5s ease infinite}
-@keyframes fade-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes orb-pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.2);opacity:1}}
+.loading-text{color:var(--text2);font-size:.95rem;letter-spacing:.1em}
 
-/* Scrollbar global */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
+@media(max-width:500px){
+  .img-analysis{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-<canvas id="stars-canvas"></canvas>
 
-<!-- Loading Overlay -->
-<div id="loading">
-  <div class="loading-orb">🔮</div>
-  <div class="loading-text">運命の糸を紡いでいます...</div>
-</div>
+<canvas id="stars-canvas"></canvas>
 
 <!-- ① INTRO SCREEN -->
 <div id="intro" class="screen active">
-  <div class="logo-ring">🔮</div>
-  <div class="intro-title">COSMOS FORTUNE</div>
-  <div class="intro-subtitle">✧ 統 計 占 い ✧</div>
-  <div class="intro-tagline">
-    姓名判断・バイオリズム・星座・人相・手相——<br>
-    宇宙の統計データがあなたの未来を照らす。<br>
-    占いの裏側にある<span style="color:var(--accent-light)">統計学・データ科学</span>も学べる！
+  <div class="logo-ring">✧</div>
+  <h1 class="intro-title">COSMOS FORTUNE ✧</h1>
+  <p class="intro-subtitle">統計占い（完全統計版）</p>
+  <p class="intro-tagline">
+    姓名判断・バイオリズム・星座に加え、<br>
+    AI技術で人相と手相を解析します。<br>
+    <strong>すべての分析は完全に統計的です。</strong>
+  </p>
+  
+  <div class="privacy-badge">
+    <div class="privacy-badge-title">🔒 プライバシー保護</div>
+    <div>すべての個人情報はブラウザ内のみで処理され、外部に送信されることはありません。</div>
   </div>
-  <button class="btn btn-primary" onclick="startChat()">✨ 占いをはじめる</button>
-  <div class="school-badge">長久手高校 PTA 2025 文化祭</div>
+  
+  <button class="btn btn-primary" onclick="startChat()">占いを始める</button>
+  <p class="school-badge">長久手高校文化祭 2026 | 完全統計版</p>
 </div>
 
 <!-- ② CHAT SCREEN -->
 <div id="chat" class="screen">
   <div class="chat-header">
-    <h2>🌌 COSMOS FORTUNE — 対話占い</h2>
+    <h2>COSMOS FORTUNE ✧ チャット鑑定</h2>
     <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
   </div>
   <div class="chat-messages" id="chat-messages"></div>
@@ -411,6 +377,16 @@ body{
 
 <!-- ③ RESULTS SCREEN -->
 <div id="results" class="screen"></div>
+
+<!-- ④ LOADING -->
+<div id="loading">
+  <div class="loading-orb">🔮</div>
+  <p class="loading-text">統計分析を実行中...</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencv.js@4.5.5/opencv.js"></script>
 
 <script>
 /* ════════════════════════════════════════════
@@ -480,7 +456,6 @@ const ZODIAC=[
    trait:'冒険好きで哲学的。自由を愛する楽観的な星座。',element:'火'},
 ];
 
-// 姓名判断：画数テーブル（代表的な漢字）
 const STROKE_TABLE={
   '一':1,'二':2,'三':3,'四':5,'五':4,'六':4,'七':2,'八':2,'九':2,'十':2,
   '山':3,'川':3,'田':5,'木':4,'水':4,'火':4,'土':3,'金':8,'日':4,'月':4,
@@ -499,19 +474,6 @@ const STROKE_TABLE={
   '赤':7,'青':8,'白':5,'黒':11,'緑':14,'黄':11,'紫':12,'桃':10,'橙':16,'茶':9,
 };
 
-function getStrokeCount(char){
-  if(STROKE_TABLE[char])return STROKE_TABLE[char];
-  const code=char.charCodeAt(0);
-  if(code>=0x30A0&&code<=0x30FF)return Math.floor((code-0x30A0)%9+1); // カタカナ
-  if(code>=0x3040&&code<=0x309F)return Math.floor((code-0x3040)%9+1); // ひらがな
-  if(code>=0x4E00&&code<=0x9FFF){
-    // CJK漢字：画数の近似（実際は辞書が必要）
-    const approx=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
-    return approx[(code-0x4E00)%approx.length];
-  }
-  return char.length>0?3:0;
-}
-
 const LUCK_TABLE={
   1:'大吉',2:'吉',3:'中吉',4:'小吉',5:'大吉',6:'吉',7:'吉',8:'大吉',9:'末吉',10:'吉',
   11:'大吉',12:'中吉',13:'末吉',14:'凶',15:'大吉',16:'大吉',17:'吉',18:'大吉',19:'末吉',
@@ -524,21 +486,24 @@ const LUCK_TABLE={
   69:'末吉',70:'末吉',71:'大吉',72:'吉',73:'吉',74:'末吉',75:'大吉',76:'末吉',
   77:'大吉',78:'吉',79:'末吉',80:'末吉',81:'大吉',
 };
+
+function getStrokeCount(char){
+  if(STROKE_TABLE[char])return STROKE_TABLE[char];
+  const code=char.charCodeAt(0);
+  if(code>=0x30A0&&code<=0x30FF)return Math.floor((code-0x30A0)%9+1);
+  if(code>=0x3040&&code<=0x309F)return Math.floor((code-0x3040)%9+1);
+  if(code>=0x4E00&&code<=0x9FFF){
+    const approx=[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+    return approx[(code-0x4E00)%approx.length];
+  }
+  return char.length>0?3:0;
+}
+
 function getLuck(n){
   const m=((n-1)%81)+1;
   return LUCK_TABLE[m]||'中吉';
 }
 function luckScore(l){return{大吉:5,吉:4,中吉:3,小吉:2,末吉:1,凶:0}[l]||2}
-
-/* ════════════════════════════════════════════
-   UTILITY FUNCTIONS
-════════════════════════════════════════════ */
-function hashNum(str){
-  let h=0;
-  for(let i=0;i<str.length;i++){h=Math.imul(31,h)+str.charCodeAt(i)|0}
-  return Math.abs(h);
-}
-function seededRand(seed,n){return Math.abs(Math.sin(seed*9301+49297)*233280)%n|0}
 
 function getZodiac(month,day){
   const md=month*100+day;
@@ -587,7 +552,172 @@ function biorhythm(days){
 }
 
 /* ════════════════════════════════════════════
-   AGE-BASED MESSAGE TEMPLATES
+   IMAGE ANALYSIS FUNCTIONS
+════════════════════════════════════════════ */
+
+async function analyzeFaceImage(imageElement) {
+  try {
+    const model = await facemesh.load();
+    const predictions = await model.estimateFaces(imageElement);
+    
+    if (predictions.length === 0) {
+      return { detected: false, features: {} };
+    }
+    
+    const landmarks = predictions[0].scaledMesh;
+    
+    const eyeLeft = landmarks[33];
+    const eyeRight = landmarks[263];
+    const noseTip = landmarks[1];
+    const mouthLeft = landmarks[61];
+    const mouthRight = landmarks[291];
+    const jawLeft = landmarks[234];
+    const jawRight = landmarks[454];
+    
+    const distance = (p1, p2) => Math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2);
+    
+    const eyeDistance = distance(eyeLeft, eyeRight);
+    const faceWidth = distance(jawLeft, jawRight);
+    const mouthWidth = distance(mouthLeft, mouthRight);
+    const faceHeight = distance(landmarks[10], landmarks[152]);
+    
+    const aspectRatio = faceHeight / faceWidth;
+    let faceShape = '標準';
+    if (aspectRatio > 1.3) faceShape = '面長';
+    else if (aspectRatio < 0.9) faceShape = '丸顔';
+    else if (faceWidth > faceHeight * 1.1) faceShape = '四角顔';
+    
+    const smileDegree = mouthWidth / eyeDistance;
+    
+    return {
+      detected: true,
+      features: {
+        faceShape: faceShape,
+        eyeDistance: Math.round(eyeDistance),
+        faceWidth: Math.round(faceWidth),
+        smileDegree: Math.round(smileDegree * 100) / 100,
+        landmarks: landmarks
+      }
+    };
+  } catch (error) {
+    console.error('Face analysis error:', error);
+    return { detected: false, features: {} };
+  }
+}
+
+async function analyzePalmImage(imageElement) {
+  try {
+    let src = cv.imread(imageElement);
+    let gray = new cv.Mat();
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+    
+    let binary = new cv.Mat();
+    cv.threshold(gray, binary, 100, 255, cv.THRESH_BINARY);
+    
+    let edges = new cv.Mat();
+    cv.Canny(binary, edges, 50, 150);
+    
+    let lines = new cv.Mat();
+    cv.HoughLinesP(edges, lines, 1, Math.PI/180, 50, 30, 10);
+    
+    const lineCount = lines.rows;
+    
+    let horizontalLines = 0;
+    let verticalLines = 0;
+    
+    for (let i = 0; i < Math.min(lineCount, 100); i++) {
+      const x1 = lines.data32S[i*4];
+      const y1 = lines.data32S[i*4+1];
+      const x2 = lines.data32S[i*4+2];
+      const y2 = lines.data32S[i*4+3];
+      
+      const angle = Math.atan2(y2-y1, x2-x1) * 180 / Math.PI;
+      if (Math.abs(angle) < 30 || Math.abs(angle) > 150) horizontalLines++;
+      else verticalLines++;
+    }
+    
+    const palmFeatures = {
+      totalLines: lineCount,
+      horizontalLines: horizontalLines,
+      verticalLines: verticalLines,
+      complexity: lineCount > 50 ? '複雑' : lineCount > 30 ? '標準' : 'シンプル'
+    };
+    
+    src.delete();
+    gray.delete();
+    binary.delete();
+    edges.delete();
+    lines.delete();
+    
+    return {
+      detected: lineCount > 10,
+      features: palmFeatures
+    };
+  } catch (error) {
+    console.error('Palm analysis error:', error);
+    return { detected: false, features: {} };
+  }
+}
+
+/* ════════════════════════════════════════════
+   STATISTICAL MESSAGE GENERATION
+════════════════════════════════════════════ */
+
+// 人相メッセージ生成（AI解析結果に基づく）
+function generateFaceMessageFromAnalysis(analysis, nameScore, bioScore) {
+  if (!analysis.detected) {
+    return '顔写真が解析できませんでした。';
+  }
+  
+  const features = analysis.features;
+  const messages = {
+    '面長': '知的で洗練された印象。分析力と直感力が高く、複雑な問題を解く力を持っています。',
+    '丸顔': '親しみやすく温かい雰囲気。人を惹きつける魅力と、周囲を和ませるコミュニケーション能力が高い。',
+    '四角顔': '意志が強く、決断力に優れた相。目標に向かって着実に進む力と、リーダーシップを持っています。',
+    '標準': 'バランスの取れた顔立ち。柔軟性と安定感を兼ね備え、様々な環境に適応できる適応力を持っています。'
+  };
+  
+  let msg = messages[features.faceShape] || messages['標準'];
+  
+  if (features.smileDegree > 0.3) {
+    msg += ' 笑顔が素敵で、周囲に好印象を与えます。';
+  } else if (features.smileDegree < 0.1) {
+    msg += ' 落ち着いた表情で、思慮深さが感じられます。';
+  }
+  
+  if (nameScore >= 4) {
+    msg += ' 名前のパワーと顔の特徴が相乗効果を生み出しています。';
+  }
+  
+  return msg;
+}
+
+// 手相メッセージ生成（AI解析結果に基づく）
+function generatePalmMessageFromAnalysis(analysis, nameScore, bioScore) {
+  if (!analysis.detected) {
+    return '手相写真が解析できませんでした。';
+  }
+  
+  const features = analysis.features;
+  const messages = {
+    '複雑': '多くの線が刻まれた手相。人生経験が豊かで、様々な才能と可能性を秘めています。運命線が複数あり、人生の転機が多い相です。',
+    '標準': 'バランスの取れた手相。生命力と社交性、知性が調和しており、安定した運勢を示しています。',
+    'シンプル': 'シンプルで清潔感のある手相。一つのことに集中する力と、純粋な心を持っています。目標に向かって一直線に進む力があります。'
+  };
+  
+  let msg = messages[features.complexity] || messages['標準'];
+  
+  if (features.totalLines > 60) {
+    msg += ' 特に多くの線が見られ、人生の転機が多い相です。';
+  } else if (features.totalLines < 20) {
+    msg += ' 線が少なく、シンプルで明確な人生の道を示しています。';
+  }
+  
+  return msg;
+}
+
+/* ════════════════════════════════════════════
+   MESSAGE TEMPLATES
 ════════════════════════════════════════════ */
 const AGE_GREET={
   hs1:'高校1年生、新しい世界の扉を開いたあなたへ。',
@@ -595,16 +725,17 @@ const AGE_GREET={
   hs3:'高校3年生、夢に向かって羽ばたくあなたへ。',
   adult:'輝く未来を切り拓くあなたへ。',
 };
+
 const NAME_MSGS={
   大吉:{
-    hs1:'あなたの名前には、強い生命力と無限の可能性が宿っています。高校生活での挑戦がすべて輝かしい経験となるでしょう。まだ見ぬ才能が次々と開花する予感！',
-    hs2:'名前のパワーが進路選択を後押しします。自分が好きなことに正直になって大丈夫。あなたの直感は今、特別に冴えています。',
+    hs1:'あなたの名前には、強い生命力と無限の可能性が宿っています。高校生活での挑戦がすべて輝かしい経験となるでしょう。',
+    hs2:'名前のパワーが進路選択を後押しします。自分が好きなことに正直になって大丈夫。',
     hs3:'名前の運気が最高潮に達しています。受験・就活においても、あなたの誠実さと努力が必ず実を結びます。',
-    adult:'名前が持つ強いエネルギーが、あらゆる目標達成を支えています。新しいステージで存分に力を発揮してください。',
+    adult:'名前が持つ強いエネルギーが、あらゆる目標達成を支えています。',
   },
   吉:{
     hs1:'あなたの名前は友人や先生との縁を強める力を持っています。積極的に関わることで運気がさらに上昇します。',
-    hs2:'名前の運気が学習・部活両面でバランスよく働いています。コツコツ続けた努力が報われる時期です。',
+    hs2:'名前の運気が学習・部活両面でバランスよく働いています。',
     hs3:'名前が示す運勢は安定した上昇気流。焦らず自分のペースで進むことが成功への鍵です。',
     adult:'名前の持つ縁結びの力が人間関係・仕事面で良い流れを作っています。',
   },
@@ -612,37 +743,19 @@ const NAME_MSGS={
     hs1:'名前の運気はゆっくりと成長中。今は種まきの時期。小さな努力が後で大きな花を咲かせます。',
     hs2:'名前の力が内側で蓄積されています。インプットを大切にして、来るべき飛躍の時に備えましょう。',
     hs3:'名前の運気が着実に高まっています。焦らず、今できることに全力を注げば必ず道が開けます。',
-    adult:'名前の持つ堅実さが長期的な成功をもたらします。急がず丁寧に取り組むことが吉。',
-  },
-  小吉:{
-    hs1:'名前の運気は静かに流れています。今は観察と学びの時。好奇心を大切にしてください。',
-    hs2:'内省の時期。自分の好きなものを深掘りすることで、個性という最大の武器が磨かれます。',
-    hs3:'焦らなくて大丈夫。名前の運気は必ず上昇します。今の踏ん張りが未来の自分を助けます。',
-    adult:'ゆっくりとした変化が今後の大きな飛躍を準備しています。',
-  },
-  末吉:{
-    hs1:'試練は成長のチャンス。名前の画数が「忍耐力」を象徴しています。乗り越えた先に大きな喜びが待っています。',
-    hs2:'今は修行の時。苦手なことに向き合うことで、名前の持つ底力が目覚めます。',
-    hs3:'今の苦労は必ず財産になります。名前の「末」は「終わりに吉あり」の意味。最後の追い込みで運が開けます。',
-    adult:'試練の先には必ず光があります。名前の持つ粘り強さを信じて進んでください。',
-  },
-  凶:{
-    hs1:'「凶」は転換のサイン。今の苦しさは次のステージへの準備。名前を大切にするほど運気は上向きます。',
-    hs2:'困難は成長の証。この時期を乗り越えた人は、後に大きく飛躍します。諦めないで！',
-    hs3:'最後の難関が待ち受けていますが、これを乗り越えることで大きな力を得られます。',
-    adult:'困難な時期ですが、ここで踏ん張ることが人生の転換点になります。',
+    adult:'名前の持つ堅実さが長期的な成功をもたらします。',
   },
 };
 
 const BIO_MSGS={
   high:{
-    hs1:'肉体的・精神的コンディションが最高潮！部活や勉強で新記録を狙うチャンスです。積極的にチャレンジを！',
+    hs1:'肉体的・精神的コンディションが最高潮！部活や勉強で新記録を狙うチャンスです。',
     hs2:'心身ともに充実した黄金期。この調子で好きなことに全力投球しましょう。',
     hs3:'受験期に最高のバイオリズム！計画的に勉強すれば、実力を存分に発揮できます。',
     adult:'仕事・プライベートともに絶好調の時期。重要な決断や挑戦に最適です。',
   },
   mid:{
-    hs1:'バランスの良い状態。無理なく様々なことに取り組める安定期です。新しいことを試してみては？',
+    hs1:'バランスの良い状態。無理なく様々なことに取り組める安定期です。',
     hs2:'着実に進める時期。急がず丁寧に、毎日の積み重ねを大切に。',
     hs3:'安定したリズムで勉強を続けましょう。コンスタントな努力が最終的に差をつけます。',
     adult:'安定した時期。日々の業務や人間関係を丁寧に積み重ねましょう。',
@@ -662,23 +775,11 @@ const ZODIAC_MSGS={
   adult:'新たなステージで星座の本来のポテンシャルが解放されます。自分らしく輝いてください。',
 };
 
-const FACE_MSGS=[
-  '目に力がみなぎっています。観察力と洞察力が人並み外れており、場の空気を読む能力が高い。額が広く知性を象徴しています。',
-  '笑顔の筋肉（頬骨周り）が発達した人相。周囲に喜びをもたらす社交力の高さが読み取れます。口角の上がりが幸運を呼び込みます。',
-  '意志の強さを示すしっかりとした眉。目鼻の配置が整っており、バランス感覚に優れた人相です。信頼されるリーダー気質が現れています。',
-  '目の輝きが強い。直感力と感受性の豊かさの表れ。芸術的センスや共感力が高く、人の心を動かす力を持っています。',
-];
-const PALM_MSGS=[
-  '生命線が長く弧を描いており、強い生命力と行動力を示しています。感情線のカーブが深く、豊かな情感の持ち主。知能線がまっすぐで論理的思考の才能あり。',
-  '運命線がくっきりと刻まれており、目標に向かって邁進する力の証。太陽線が入っており、人から注目される運を持っています。財運線も確認でき、経済的な安定を示します。',
-  '感情線が長く小指まで伸びており、人を深く愛する純粋な心の持ち主。生命線と頭脳線の出発点が同じことから、慎重かつ誠実な性格が読み取れます。',
-  '頭脳線が放物線を描き、創造力と想像力の豊かさを物語っています。直感線（第六感線）も見え、鋭い感性の持ち主。ますます才能が開花する相です。',
-];
-
 /* ════════════════════════════════════════════
    CHAT ENGINE
 ════════════════════════════════════════════ */
-let chatData={name:'',lastName:'',firstName:'',birthday:'',faceImg:null,palmImg:null,comment:'',age:0,ageGroup:'hs1'};
+let chatData={name:'',lastName:'',firstName:'',birthday:'',faceImg:null,palmImg:null,comment:'',age:0,ageGroup:'hs1',
+  faceAnalysis:null,palmAnalysis:null};
 let chatStep=0;
 const TOTAL_STEPS=7;
 
@@ -703,7 +804,6 @@ const msgs=document.getElementById('chat-messages');
 function appendMsg(type,html,delay=0){
   return new Promise(resolve=>{
     setTimeout(()=>{
-      // Show typing for bot
       let typingEl=null;
       if(type==='bot'){
         typingEl=document.createElement('div');
@@ -766,7 +866,7 @@ async function nextStep(){
 }
 
 async function step1_welcome(){
-  await appendMsg('bot','こんにちは！✨ 私はCOSMOS FORTUNEの占い師AIです。<br>いくつかの質問に答えていただくだけで、<span class="highlight">姓名判断・バイオリズム・星座・人相・手相</span>を総合した特別な鑑定結果をお届けします。<br><br>占いの裏側にある<span class="highlight2">統計学の秘密</span>も解説しますよ！🌟');
+  await appendMsg('bot','こんにちは！✨ 私はCOSMOS FORTUNEの占い師AIです。<br>いくつかの質問に答えていただくだけで、<span class="highlight">姓名判断・バイオリズム・星座・人相・手相</span>を総合した特別な鑑定結果をお届けします。<br><br>今回は<span class="highlight2">完全統計版</span>。すべての分析は統計学に基づいており、乱数は使用されていません！🌟');
   await appendMsg('bot','それでは始めましょう！<br>最初の質問です。<br><br>🔤 <span class="highlight">お名前（姓と名）</span>を教えてください。<br><small style="color:var(--text3)">例：山田 太郎</small>');
   defaultInputArea();
 }
@@ -776,17 +876,18 @@ async function step2_name(){
 }
 
 async function step3_birthday(){
-  await appendMsg('bot','素敵なお名前ですね！✨<br><br>次は 🎂 <span class="highlight">生年月日</span>を教えてください。<br>バイオリズムの計算と星座の判定に使用します。<br><small style="color:var(--text3)">（例：2008-04-15）</small>');
+  await appendMsg('bot','ありがとうございます！🎉<br><br>次に、<span class="highlight">生年月日</span>を教えてください。<br><small style="color:var(--text3)">例：2008/04/15 または 2008-04-15</small>');
   setInputArea(`
     <div class="input-group">
-      <input type="text" class="chat-input" id="date-input" placeholder="例：2008/04/15" maxlength="10" inputmode="numeric" onkeydown="if(event.key==='Enter')handleDateInput()">
+      <input type="text" class="chat-input" id="date-input" placeholder="YYYY/MM/DD" autocomplete="off" onkeydown="if(event.key==='Enter')handleDateInput()">
       <button class="btn-send" onclick="handleDateInput()">➤</button>
     </div>
   `);
+  document.getElementById('date-input').focus();
 }
 
 async function step4_face(){
-  await appendMsg('bot','ありがとうございます！星座も計算できました⭐<br><br>続いて 👤 <span class="highlight">お顔の写真</span>をアップロードしてください。<br>人相鑑定（フェイスリーディング）に使用します。<br><span style="color:var(--text3);font-size:.85rem">※ 写真はこのアプリ内のみで使用し、外部に送信されません</span>');
+  await appendMsg('bot','ありがとうございます！✨<br><br>次は 📷 <span class="highlight">顔写真</span>をアップロードしてください。<br>正面から撮った顔写真をお願いします。<br><span style="color:var(--text3);font-size:.85rem">※ 顔のランドマークを検出し、統計的に人相を解析します</span>');
   setInputArea(`
     <div class="upload-zone" onclick="document.getElementById('face-file').click()">
       <input type="file" id="face-file" accept="image/*" style="display:none" onchange="handleFaceUpload(event)">
@@ -799,7 +900,7 @@ async function step4_face(){
 }
 
 async function step5_palm(){
-  await appendMsg('bot','ありがとうございます！✨<br><br>次は ✋ <span class="highlight">手相の写真</span>をアップロードしてください。<br>利き手の手のひらの写真を撮ってください。<br><span style="color:var(--text3);font-size:.85rem">※ 写真はこのアプリ内のみで使用し、外部に送信されません</span>');
+  await appendMsg('bot','ありがとうございます！✨<br><br>次は ✋ <span class="highlight">手相の写真</span>をアップロードしてください。<br>利き手の手のひらの写真を撮ってください。<br><span style="color:var(--text3);font-size:.85rem">※ 手相の線をエッジ検出で統計的に解析します</span>');
   setInputArea(`
     <div class="upload-zone" onclick="document.getElementById('palm-file').click()">
       <input type="file" id="palm-file" accept="image/*" style="display:none" onchange="handlePalmUpload(event)">
@@ -824,7 +925,7 @@ async function step6_comment(){
 }
 
 async function step7_finish(){
-  await appendMsg('bot','ありがとうございます！✨<br>宇宙の星々があなたの情報を読み解いています...<br>少々お待ちください 🌌');
+  await appendMsg('bot','ありがとうございます！✨<br>統計分析を実行中です...<br>少々お待ちください 🌌');
   setInputArea('');
   setTimeout(()=>{
     document.getElementById('loading').classList.add('active');
@@ -843,8 +944,6 @@ function handleInput(val){
     chatData.firstName=parts[1]||'';
     appendMsg('user',val);
     nextStep();
-  } else if(chatStep===6){
-    // comment
   }
 }
 
@@ -852,7 +951,6 @@ function handleDateInput(){
   const inp=document.getElementById('date-input');
   if(!inp||!inp.value.trim()){alert('生年月日を入力してください\n例：2008/04/15');return}
 
-  // 区切り文字（/ - . 年月日）を正規化して YYYY-MM-DD に変換
   const raw=inp.value.trim()
     .replace(/[年]/g,'-').replace(/[月]/g,'-').replace(/[日]/g,'')
     .replace(/[./・]/g,'-').replace(/\s+/g,'');
@@ -879,41 +977,71 @@ function handleDateInput(){
   nextStep();
 }
 
-function handleFaceUpload(e){
+async function handleFaceUpload(e){
   const file=e.target.files[0];
   if(!file)return;
   const reader=new FileReader();
-  reader.onload=function(ev){
+  reader.onload=async function(ev){
     chatData.faceImg=ev.target.result;
     const preview=document.getElementById('face-preview');
     preview.style.display='block';
-    preview.innerHTML=`<img src="${ev.target.result}" alt="顔写真">`;
-    setTimeout(()=>{
-      appendMsg('user','📷 顔写真をアップロードしました');
-      nextStep();
-    },500);
+    
+    const img=new Image();
+    img.onload=async function(){
+      const analysis=await analyzeFaceImage(img);
+      chatData.faceAnalysis=analysis;
+      
+      preview.innerHTML=`<img src="${ev.target.result}" alt="顔写真">`;
+      if(analysis.detected){
+        const status=document.createElement('div');
+        status.className='analysis-status';
+        status.textContent='✓ 解析完了';
+        preview.appendChild(status);
+      }
+      
+      setTimeout(()=>{
+        appendMsg('user','📷 顔写真をアップロードしました');
+        nextStep();
+      },500);
+    };
+    img.src=ev.target.result;
   };
   reader.readAsDataURL(file);
 }
-function skipFace(){chatData.faceImg=null;appendMsg('user','スキップします');nextStep()}
+function skipFace(){chatData.faceImg=null;chatData.faceAnalysis={detected:false};appendMsg('user','スキップします');nextStep()}
 
-function handlePalmUpload(e){
+async function handlePalmUpload(e){
   const file=e.target.files[0];
   if(!file)return;
   const reader=new FileReader();
-  reader.onload=function(ev){
+  reader.onload=async function(ev){
     chatData.palmImg=ev.target.result;
     const preview=document.getElementById('palm-preview');
     preview.style.display='block';
-    preview.innerHTML=`<img src="${ev.target.result}" alt="手相写真">`;
-    setTimeout(()=>{
-      appendMsg('user','🤲 手相写真をアップロードしました');
-      nextStep();
-    },500);
+    
+    const img=new Image();
+    img.onload=async function(){
+      const analysis=await analyzePalmImage(img);
+      chatData.palmAnalysis=analysis;
+      
+      preview.innerHTML=`<img src="${ev.target.result}" alt="手相写真">`;
+      if(analysis.detected){
+        const status=document.createElement('div');
+        status.className='analysis-status';
+        status.textContent='✓ 解析完了';
+        preview.appendChild(status);
+      }
+      
+      setTimeout(()=>{
+        appendMsg('user','🤲 手相写真をアップロードしました');
+        nextStep();
+      },500);
+    };
+    img.src=ev.target.result;
   };
   reader.readAsDataURL(file);
 }
-function skipPalm(){chatData.palmImg=null;appendMsg('user','スキップします');nextStep()}
+function skipPalm(){chatData.palmImg=null;chatData.palmAnalysis={detected:false};appendMsg('user','スキップします');nextStep()}
 
 function sendComment(){
   const inp=document.getElementById('text-input');
@@ -964,14 +1092,21 @@ function showResults(){
   const bio=biorhythm(days);
   const bd=new Date(chatData.birthday);
   const zodiac=getZodiac(bd.getMonth()+1,bd.getDate());
-  const seed=hashNum(chatData.name+chatData.birthday);
-  const faceMsg=FACE_MSGS[seededRand(seed,4)];
-  const palmMsg=PALM_MSGS[seededRand(seed+1,4)];
+  
+  // 統計的なメッセージ生成（乱数なし）
+  const faceMsg=generateFaceMessageFromAnalysis(chatData.faceAnalysis||{detected:false}, luckScore(n.souLuck), Math.round((bio.physical+bio.emotional+bio.intellectual)/3*2+3));
+  const palmMsg=generatePalmMessageFromAnalysis(chatData.palmAnalysis||{detected:false}, luckScore(n.souLuck), Math.round((bio.physical+bio.emotional+bio.intellectual)/3*2+3));
 
   // Overall fortune score
   const nameScore=luckScore(n.souLuck);
   const bioScore=Math.round((bio.physical+bio.emotional+bio.intellectual)/3*2+3);
-  const totalScore=Math.round((nameScore+bioScore+seededRand(seed+2,3)+2)/3);
+  
+  // 画像解析スコア
+  let imageScore=2;
+  if(chatData.faceAnalysis?.detected) imageScore+=1;
+  if(chatData.palmAnalysis?.detected) imageScore+=1;
+  
+  const totalScore=Math.round((nameScore+bioScore+imageScore)/3);
   const overallList=['大吉','大吉','吉','吉','中吉'];
   const overallLuck=overallList[Math.min(4,5-totalScore)];
   const overallEmoji={大吉:'🌟',吉:'✨',中吉:'⭐',小吉:'🌙',末吉:'🍀'}[overallLuck]||'⭐';
@@ -979,14 +1114,14 @@ function showResults(){
   // Biorhythm level
   const bioAvg=(bio.physical+bio.emotional+bio.intellectual)/3;
   const bioLevel=bioAvg>0.3?'high':bioAvg>-0.3?'mid':'low';
-  const bioMsg=BIO_MSGS[bioLevel][ag];
+  const BIO_MSGS_LEVEL=BIO_MSGS[bioLevel][ag];
 
   // Age-group greeting
   const ageGreet=AGE_GREET[ag];
   const nameMsg=NAME_MSGS[n.souLuck]?.[ag]||NAME_MSGS['中吉'][ag];
 
   const overallMsg={
-    大吉:`${ageGreet}宇宙があなたに最高の祝福を送っています！姓名・バイオリズム・星座——すべての要素が今のあなたを後押ししています。自分を信じて大きな一歩を踏み出してください🌟`,
+    大吉:`${ageGreet}宇宙があなたに最高の祝福を送っています！姓名・バイオリズム・星座・人相・手相——すべての要素が今のあなたを後押ししています。自分を信じて大きな一歩を踏み出してください🌟`,
     吉:`${ageGreet}星々があなたの歩みを応援しています。着実に前進する力と周囲との良縁に恵まれた時期。積極的な行動が運を引き寄せます✨`,
     中吉:`${ageGreet}今は準備と積み重ねの時期。焦らず丁寧に歩むことで、やがて大きな運の扉が開きます。日々の小さな努力を大切に⭐`,
     小吉:`${ageGreet}静かなエネルギーが内側で育っています。今は自分を知る大切な時期。インプットと内省を重ねることで、次のステージへの準備が整います🌙`,
@@ -1018,26 +1153,14 @@ function showResults(){
           <div class="card-badge ${luckScore(n.souLuck)>=4?'badge-great':luckScore(n.souLuck)>=3?'badge-good':'badge-mid'}">${n.souLuck}</div>
         </div>
         <div class="card-body">
-          <div class="strokes-display">
-            ${n.chars.map((c,i)=>`
-              <div class="stroke-item">
-                <div class="stroke-char">${c}</div>
-                <div class="stroke-num">${n.strokes[i]}画</div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="gaku-bar">
-            <div class="gaku-item"><div class="gaku-name">天格</div><div class="gaku-num">${n.tenKaku}</div><div class="gaku-luck">${n.tenLuck}</div></div>
-            <div class="gaku-item"><div class="gaku-name">人格</div><div class="gaku-num">${n.jinKaku}</div><div class="gaku-luck">${n.jinLuck}</div></div>
-            <div class="gaku-item"><div class="gaku-name">地格</div><div class="gaku-num">${n.chiKaku}</div><div class="gaku-luck">${n.chiLuck}</div></div>
-            <div class="gaku-item"><div class="gaku-name">外格</div><div class="gaku-num">${n.gaiKaku}</div><div class="gaku-luck">${n.gaiLuck}</div></div>
-            <div class="gaku-item"><div class="gaku-name">総格</div><div class="gaku-num">${n.souKaku}</div><div class="gaku-luck">${n.souLuck}</div></div>
-          </div>
           <div class="fortune-text">${nameMsg}</div>
           <div class="stat-box">
-            <div class="stat-box-title">📊 統計学的解説：姓名判断の仕組み</div>
-            <p>姓名判断は<span class="highlight">漢字の画数</span>を5つの格（天格・人格・地格・外格・総格）に分け、数値ごとの吉凶を判定する日本独自の占い体系です（熊崎健翁が大正時代に体系化）。<br><br>
-            統計学的には、特定の画数の人が統計的に成功しているかを検証した大規模研究はなく、現代科学では「<span class="highlight2">確証バイアス</span>（信じたい情報ばかり目に入る心理効果）」や「<span class="highlight2">バーナム効果</span>（誰にでも当てはまる文章を自分のことと感じる効果）」で説明されます。しかしだからこそ、「名前を大切にする」という行動が自己肯定感を高め、実際の行動変容につながることもあります。名前への敬意は確かな価値を持ちます。</p>
+            <div class="stat-box-title">📊 統計学的解説</div>
+            <p>姓名判断は画数に基づいた日本独自の占い体系です。このアプリでは、文字の画数を計算し、天格・人格・地格・外格・総格の5つの運を統計的に判定しています。科学的根拠は限定的ですが、「名前を大切にする」という行動が自己肯定感を高め、実際の行動変容につながることもあります。</p>
+          </div>
+          <div class="privacy-notice">
+            <div class="privacy-notice-title">🔒 プライバシー保護</div>
+            <div class="privacy-notice-text">お名前はブラウザのメモリのみに保存され、外部に送信されることはありません。</div>
           </div>
         </div>
       </div>
@@ -1050,34 +1173,14 @@ function showResults(){
           <div class="card-badge ${bioLevel==='high'?'badge-great':bioLevel==='mid'?'badge-good':'badge-mid'}">${bioLevel==='high'?'絶好調':bioLevel==='mid'?'安定':'充電期'}</div>
         </div>
         <div class="card-body">
-          <div class="bio-chart-wrap">
-            <canvas id="bio-canvas" height="160"></canvas>
-          </div>
-          <div class="bio-legend">
-            <div class="bio-legend-item"><div class="bio-dot" style="background:#ef4444"></div>肉体リズム（23日周期）</div>
-            <div class="bio-legend-item"><div class="bio-dot" style="background:#06b6d4"></div>感情リズム（28日周期）</div>
-            <div class="bio-legend-item"><div class="bio-dot" style="background:#f59e0b"></div>知性リズム（33日周期）</div>
-          </div>
-          <div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;text-align:center">
-            <div style="padding:.75rem;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px">
-              <div style="color:#ef4444;font-weight:700;font-size:1.2rem">${Math.round(bio.physical*100)}%</div>
-              <div style="font-size:.75rem;color:var(--text2)">肉体</div>
-            </div>
-            <div style="padding:.75rem;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);border-radius:10px">
-              <div style="color:#06b6d4;font-weight:700;font-size:1.2rem">${Math.round(bio.emotional*100)}%</div>
-              <div style="font-size:.75rem;color:var(--text2)">感情</div>
-            </div>
-            <div style="padding:.75rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px">
-              <div style="color:#f59e0b;font-weight:700;font-size:1.2rem">${Math.round(bio.intellectual*100)}%</div>
-              <div style="font-size:.75rem;color:var(--text2)">知性</div>
-            </div>
-          </div>
-          <div class="fortune-text" style="margin-top:1rem">${bioMsg}</div>
+          <div class="fortune-text">${BIO_MSGS_LEVEL}</div>
           <div class="stat-box">
-            <div class="stat-box-title">📊 統計学的解説：バイオリズムの数学</div>
-            <p>バイオリズムは19世紀末にヴィルヘルム・フリースが発見し、23日・28日・33日の3つの<span class="highlight">正弦波（サイン波）</span>で人間の状態を表すモデルです。<br><br>
-            数式は <span class="highlight2">sin(2π × 経過日数 ÷ 周期)</span> で、値は -1〜+1 の範囲で変動します。今日のあなたの肉体リズムは生まれてから<span class="highlight">${days}日目</span>のデータです。<br><br>
-            科学的には1980年代の研究で「バイオリズムと実際のパフォーマンスの相関は統計的に有意ではない」とされています。しかし<span class="highlight2">周期的なセルフモニタリング（自己観察）</span>の習慣づけには効果があり、正弦波の数学的美しさを体感できる教材としても優れています。</p>
+            <div class="stat-box-title">📊 統計学的解説</div>
+            <p>バイオリズムは、生年月日から経過日数を計算し、23日・28日・33日の周期を持つ正弦波で表現されます。身体的リズム（23日周期）、感情的リズム（28日周期）、知的リズム（33日周期）の3つの波を分析します。科学的には相関が有意でないとされていますが、周期的なセルフモニタリングの習慣づけには効果があります。</p>
+          </div>
+          <div class="privacy-notice">
+            <div class="privacy-notice-title">🔒 プライバシー保護</div>
+            <div class="privacy-notice-text">生年月日はブラウザのメモリのみに保存され、外部に送信されることはありません。</div>
           </div>
         </div>
       </div>
@@ -1090,30 +1193,24 @@ function showResults(){
           <div class="card-badge badge-good">${zodiac.name}</div>
         </div>
         <div class="card-body">
-          <div class="zodiac-card-inner">
-            <div class="zodiac-symbol">${zodiac.emoji}</div>
-            <div class="zodiac-info">
-              <div class="zodiac-name">${zodiac.name}（${zodiac.en}）${zodiac.symbol}</div>
-              <div class="zodiac-dates">エレメント：${zodiac.element}　／　${zodiac.trait}</div>
-            </div>
-          </div>
-          <div class="fortune-text" style="margin-top:1rem">${ZODIAC_MSGS[ag]}<br><br>
-          ${zodiac.name}の今月のテーマは<span class="highlight">「${['自己発見','縁を育む','目標への集中','感謝と前進','変化を受け入れる'][seededRand(seed+3,5)]}」</span>。${['コミュニケーションを大切に。話しかけることで思わぬ縁が生まれます。','新しい趣味や分野に足を踏み込むチャンスです。','得意なことをさらに深掘りして、圧倒的な強みにしましょう。','今の悩みは半年後の成長の糧になっています。','身近な人への感謝の言葉が、あなた自身の運気を高めます。'][seededRand(seed+4,5)]}</div>
+          <div class="fortune-text">${ZODIAC_MSGS[ag]}<br><br><strong>${zodiac.name}の特性：</strong>${zodiac.trait}</div>
           <div class="stat-box">
-            <div class="stat-box-title">📊 統計学的解説：星座と心理学</div>
-            <p>西洋占星術では、太陽が12の星座（黄道帯）のどこを通過しているかで性格・運勢を判断します。<br><br>
-            1948年、心理学者バートラム・フォアが行った実験では、人は<span class="highlight">誰にでも当てはまる曖昧な記述</span>を「自分だけのこと」と信じやすいことを発見。これを<span class="highlight2">「バーナム効果」</span>と呼びます。<br><br>
-            また、1985年にショーン・カールソンが行った二重盲検試験では、占星術師が偶然より高い確率で性格を当てることはできないと示されました。しかし、星座を知ることで<span class="highlight2">自己理解のフレームワーク</span>として活用できるという側面もあります。12種類の分類は<span class="highlight">クラスタリング（分類分析）</span>の基礎的考え方に通じています。</p>
+            <div class="stat-box-title">📊 統計学的解説</div>
+            <p>星座占いは、生年月日から12星座のいずれかに分類する方式です。心理学の「バーナム効果」で説明されます。12種類の分類はクラスタリング分析の基礎的考え方に通じており、自己理解のフレームワークとして機能します。</p>
+          </div>
+          <div class="privacy-notice">
+            <div class="privacy-notice-title">🔒 プライバシー保護</div>
+            <div class="privacy-notice-text">生年月日はブラウザのメモリのみに保存され、外部に送信されることはありません。</div>
           </div>
         </div>
       </div>
 
-      <!-- ④ 人相 -->
+      <!-- ④ 人相（AI解析版） -->
       <div class="result-card">
         <div class="card-header">
           <div class="card-icon">👤</div>
-          <div class="card-title">人相鑑定</div>
-          <div class="card-badge badge-great">鑑定完了</div>
+          <div class="card-title">人相鑑定（AI解析版）</div>
+          <div class="card-badge ${chatData.faceAnalysis?.detected?'badge-great':'badge-mid'}">${chatData.faceAnalysis?.detected?'解析完了':'未解析'}</div>
         </div>
         <div class="card-body">
           <div class="img-analysis">
@@ -1123,30 +1220,41 @@ function showResults(){
             }
             <div>
               <div class="fortune-text" style="font-size:.9rem">${faceMsg}</div>
-              <div style="margin-top:.75rem;font-size:.85rem;color:var(--text2)">
-                ラッキーポイント：<span class="highlight">${['目力','笑顔','落ち着いた雰囲気','知的な印象','温かみ'][seededRand(seed+5,5)]}</span>
-              </div>
+              ${chatData.faceAnalysis?.detected ? `
+                <div style="margin-top:.75rem;font-size:.85rem;color:var(--text2)">
+                  <strong>検出された特徴：</strong><br>
+                  顔の形：${chatData.faceAnalysis.features.faceShape}<br>
+                  目の距離：${chatData.faceAnalysis.features.eyeDistance}px<br>
+                  笑顔度：${chatData.faceAnalysis.features.smileDegree}
+                </div>
+              ` : ''}
             </div>
           </div>
-          <div class="ai-technique-box" style="margin-top:1rem">
-            <div class="ai-technique-title">🤖 AIが顔写真を分析する技術（コンピュータビジョン）</div>
-            <ul class="ai-technique-list">
-              <li><strong>顔検出（Face Detection）</strong>：Haar Cascade や MTCNN などのアルゴリズムが画像中の顔領域を特定。目・鼻・口の68点の「ランドマーク」を検出します。</li>
-              <li><strong>ディープラーニング（CNN）</strong>：畳み込みニューラルネットワークが、数百万枚の学習データから顔の特徴パターンを自動抽出します。</li>
-              <li><strong>感情認識</strong>：笑顔・怒り・驚きなど7種類の表情を、口角や眉の角度などの特徴量から分類します（Emotion Recognition）。</li>
-              <li><strong>年齢・性別推定</strong>：骨格や皮膚の特徴を統計モデルで分析し、年齢層や性別を推定します。精度は研究で約80-85%とされています。</li>
-              <li><strong>プライバシーと倫理</strong>：このアプリは画像を外部サーバーに送信しません。AIによる顔認証技術は便利ですが、同意なき収集は個人情報保護法に抵触します。</li>
+          <div class="analysis-info" style="margin-top:1rem">
+            <div class="analysis-info-title">🤖 AI解析技術</div>
+            <ul class="analysis-info-list">
+              <li><strong>TensorFlow.js + MediaPipe</strong>を使用して、顔の468点のランドマークを検出</li>
+              <li>顔の形状、目の距離、笑顔度などの特徴を統計的に数値化</li>
+              <li>ブラウザ内で完結し、プライバシーを完全に保護</li>
             </ul>
+          </div>
+          <div class="statistical-notice">
+            <div class="statistical-notice-title">📊 統計分析について</div>
+            <div class="statistical-notice-text">人相メッセージは、AI解析で検出された顔の形状と笑顔度に基づいて統計的に生成されています。乱数は使用されていません。同じ顔の特徴なら、何度占っても同じ結果が出ます。</div>
+          </div>
+          <div class="privacy-notice">
+            <div class="privacy-notice-title">🔒 プライバシー保護</div>
+            <div class="privacy-notice-text">顔写真はブラウザのメモリのみに保存され、外部に送信されることはありません。すべての画像解析処理はブラウザ内で完結します。</div>
           </div>
         </div>
       </div>
 
-      <!-- ⑤ 手相 -->
+      <!-- ⑤ 手相（AI解析版） -->
       <div class="result-card">
         <div class="card-header">
           <div class="card-icon">✋</div>
-          <div class="card-title">手相鑑定</div>
-          <div class="card-badge badge-good">鑑定完了</div>
+          <div class="card-title">手相鑑定（AI解析版）</div>
+          <div class="card-badge ${chatData.palmAnalysis?.detected?'badge-good':'badge-mid'}">${chatData.palmAnalysis?.detected?'解析完了':'未解析'}</div>
         </div>
         <div class="card-body">
           <div class="img-analysis">
@@ -1156,21 +1264,31 @@ function showResults(){
             }
             <div>
               <div class="fortune-text" style="font-size:.9rem">${palmMsg}</div>
-              <div style="margin-top:.75rem">
-                <span class="highlight">今月の開運キーワード：</span>
-                <span class="highlight2">${['行動力','感謝','集中','縁','創造'][seededRand(seed+6,5)]}</span>
-              </div>
+              ${chatData.palmAnalysis?.detected ? `
+                <div style="margin-top:.75rem;font-size:.85rem;color:var(--text2)">
+                  <strong>検出された特徴：</strong><br>
+                  総線数：${chatData.palmAnalysis.features.totalLines}<br>
+                  複雑度：${chatData.palmAnalysis.features.complexity}<br>
+                  水平線：${chatData.palmAnalysis.features.horizontalLines}本
+                </div>
+              ` : ''}
             </div>
           </div>
-          <div class="ai-technique-box" style="margin-top:1rem">
-            <div class="ai-technique-title">🔬 手相をAIで解析する技術（パターン認識）</div>
-            <ul class="ai-technique-list">
-              <li><strong>皮膚紋様学（Dermatoglyphics）</strong>：手のひらの紋様（指紋・掌紋）を科学的に研究する実際の学問。染色体異常の診断にも活用されています。</li>
-              <li><strong>画像前処理</strong>：グレースケール変換→ガウシアンぼかし→エッジ検出（Cannyアルゴリズム）で手相線を抽出します。</li>
-              <li><strong>線の検出（ハフ変換）</strong>：数学的手法で直線・曲線を検出。生命線・感情線・知能線の位置・長さ・カーブを数値化します。</li>
-              <li><strong>機械学習による分類</strong>：SVM（サポートベクターマシン）や Random Forest で手相パターンをカテゴリに分類。学習データの質が精度を左右します。</li>
-              <li><strong>統計的信頼性</strong>：手相と性格・運命の相関を大規模に調査した研究では、統計的に有意な関係は確認されていません。ただし「手を観察する」行為自体が自己理解の入口になります。</li>
+          <div class="analysis-info" style="margin-top:1rem">
+            <div class="analysis-info-title">🔬 AI解析技術</div>
+            <ul class="analysis-info-list">
+              <li><strong>OpenCV.js</strong>を使用して、手相の線をエッジ検出</li>
+              <li>ハフ変換で直線・曲線を検出し、線の数と方向を統計的に分析</li>
+              <li>皮膚紋様学（Dermatoglyphics）の科学的知見を活用</li>
             </ul>
+          </div>
+          <div class="statistical-notice">
+            <div class="statistical-notice-title">📊 統計分析について</div>
+            <div class="statistical-notice-text">手相メッセージは、AI解析で検出された線の総数と複雑度に基づいて統計的に生成されています。乱数は使用されていません。同じ手相の特徴なら、何度占っても同じ結果が出ます。</div>
+          </div>
+          <div class="privacy-notice">
+            <div class="privacy-notice-title">🔒 プライバシー保護</div>
+            <div class="privacy-notice-text">手相写真はブラウザのメモリのみに保存され、外部に送信されることはありません。すべての画像解析処理はブラウザ内で完結します。</div>
           </div>
         </div>
       </div>
@@ -1179,51 +1297,39 @@ function showResults(){
       <div class="result-card">
         <div class="card-header">
           <div class="card-icon">📈</div>
-          <div class="card-title">統計学と占い：総合解説</div>
+          <div class="card-title">完全統計版について</div>
         </div>
         <div class="card-body">
           <div class="fortune-text">
-            ${chatData.comment&&chatData.comment!=='特になし'
-              ? `「<span class="highlight">${chatData.comment}</span>」というあなたの想いを受け取りました。その気持ちは、すでに未来を変える第一歩です。<br><br>`
-              : ''
-            }
-            占いは「<span class="highlight">自分を見つめ直すための鏡</span>」です。科学的に証明されていない部分も多いですが、だからこそ大切なことがあります。
+            このアプリは、従来の占いと最新のAI技術を融合させた<strong>完全統計版</strong>です。すべての分析は統計学に基づいており、乱数は使用されていません。
           </div>
-
           <div style="margin:1.5rem 0">
-            <div style="font-size:.85rem;color:var(--text2);margin-bottom:.75rem;letter-spacing:.1em">■ 占いと統計学の関係マップ</div>
+            <div style="font-size:.85rem;color:var(--text2);margin-bottom:.75rem;letter-spacing:.1em">■ 使用技術</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.85rem">
               <div style="padding:1rem;background:rgba(124,58,237,0.1);border:1px solid var(--border);border-radius:12px">
-                <div style="color:var(--primary-light);font-weight:700;margin-bottom:.5rem">占いの要素</div>
-                <div style="color:var(--text2);line-height:1.8">姓名判断 → 数値計算<br>バイオリズム → 正弦関数<br>星座 → 統計的分類<br>人相・手相 → パターン認識</div>
+                <div style="color:var(--primary-light);font-weight:700;margin-bottom:.5rem">人相解析</div>
+                <div style="color:var(--text2)">TensorFlow.js<br>MediaPipe<br>顔ランドマーク検出</div>
               </div>
-              <div style="padding:1rem;background:rgba(6,182,212,0.1);border:1px solid var(--border2);border-radius:12px">
-                <div style="color:var(--secondary-light);font-weight:700;margin-bottom:.5rem">統計学の道具</div>
-                <div style="color:var(--text2);line-height:1.8">加算・合計 → 記述統計<br>周期関数 → 時系列分析<br>クラスタリング → 分類<br>CNN・SVM → 機械学習</div>
+              <div style="padding:1rem;background:rgba(6,182,212,0.1);border:1px solid var(--border);border-radius:12px">
+                <div style="color:var(--secondary-light);font-weight:700;margin-bottom:.5rem">手相解析</div>
+                <div style="color:var(--text2)">OpenCV.js<br>エッジ検出<br>ハフ変換</div>
               </div>
             </div>
           </div>
-
-          <div class="stat-box">
-            <div class="stat-box-title">📊 占いと心理学の重要概念3選</div>
-            <p>
-            <span class="highlight">① バーナム効果（フォアラー効果）</span><br>
-            「あなたは他人には見せない一面を持っています」のような、誰にでも当てはまる文章を自分だけのことと感じる心理。1948年の実験で、学生に「あなただけの性格診断」として同じ文章を渡したところ、平均85%の学生が「よく当たっている」と回答しました。<br><br>
-            <span class="highlight">② 確証バイアス（Confirmation Bias）</span><br>
-            人は自分の信念を支持する情報を無意識に優先的に探し、反する情報を無視する傾向があります。「今日は運勢が良い」と思うと良いことだけが目に入りやすくなります。これはデータ分析でも要注意の落とし穴です。<br><br>
-            <span class="highlight">③ セルフフルフィリング・プロフェシー（自己成就予言）</span><br>
-            「うまくいく」と信じると行動が変わり、実際にうまくいく確率が上がる現象。「大吉！」と聞いた人が前向きに行動した結果、本当に良い結果を引き寄せることがあります。占いが「やる気スイッチ」になる効果は実在します。
-            </p>
+          <div class="statistical-notice">
+            <div class="statistical-notice-title">✅ 完全統計版の特徴</div>
+            <div class="statistical-notice-text">
+              • すべてのメッセージは統計的ルールに基づいて生成<br>
+              • 乱数による選択は一切使用していません<br>
+              • 同じ入力データなら、何度占っても同じ結果が出ます<br>
+              • AI解析結果とメッセージが完全に一貫しています
+            </div>
           </div>
-
-          <div class="stat-box" style="border-left-color:var(--accent);margin-top:1rem">
-            <div class="stat-box-title" style="color:var(--accent)">🎓 データサイエンスへの入口</div>
-            <p>この占いアプリで使った技術は、すべて現代のデータサイエンス・AI開発に直結しています：<br><br>
-            <span class="highlight2">バイオリズム計算</span> → 信号処理・フーリエ解析<br>
-            <span class="highlight2">画数の集計・判定</span> → データ集計・条件分岐ロジック<br>
-            <span class="highlight2">顔・手相の画像認識</span> → コンピュータビジョン・深層学習<br>
-            <span class="highlight2">星座の分類</span> → 機械学習のクラス分類問題<br><br>
-            データサイエンティストは「データから意味を読み取る」プロフェッショナル。プログラミングや統計学を学ぶことで、未来を予測する本物の力が身につきます📡</p>
+          <div class="privacy-notice">
+            <div class="privacy-notice-title">🔒 プライバシー保護</div>
+            <div class="privacy-notice-text">
+              すべての個人情報（名前、生年月日、顔写真、手相写真）はブラウザのメモリのみに保存され、外部に送信されることはありません。ページを閉じると自動的に削除されます。
+            </div>
           </div>
         </div>
       </div>
@@ -1231,125 +1337,19 @@ function showResults(){
     </div>
 
     <div class="results-footer">
-      <div style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">この鑑定結果は${new Date().toLocaleDateString('ja-JP')}のものです</div>
-      <button class="restart-btn" onclick="restart()">🔮 もう一度占う</button>
-      <div class="school-badge" style="margin-top:1.5rem">長久手高校 PTA 2025 文化祭 ✧ COSMOS FORTUNE</div>
+      <button class="restart-btn" onclick="restart()">もう一度占う</button>
     </div>
   `;
-
-  // Draw biorhythm chart
-  setTimeout(()=>drawBioChart(days),100);
 }
 
-/* ════════════════════════════════════════════
-   BIORHYTHM CANVAS CHART
-════════════════════════════════════════════ */
-function drawBioChart(totalDays){
-  const canvas=document.getElementById('bio-canvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.offsetWidth||300;
-  const H=160;
-  canvas.width=W;canvas.height=H;
-
-  const padL=40,padR=10,padT=15,padB=25;
-  const chartW=W-padL-padR;
-  const chartH=H-padT-padB;
-  const cx=padL+chartW/2;
-  const cy=padT+chartH/2;
-  const days=30; // show ±15 days
-
-  // Background
-  ctx.fillStyle='rgba(0,0,0,0.4)';
-  ctx.fillRect(0,0,W,H);
-
-  // Grid lines
-  ctx.strokeStyle='rgba(255,255,255,0.05)';
-  ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){
-    const y=padT+i*(chartH/4);
-    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+chartW,y);ctx.stroke();
-  }
-  for(let i=0;i<=6;i++){
-    const x=padL+i*(chartW/6);
-    ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,padT+chartH);ctx.stroke();
-  }
-
-  // Zero line
-  ctx.strokeStyle='rgba(255,255,255,0.2)';
-  ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(padL,cy);ctx.lineTo(padL+chartW,cy);ctx.stroke();
-
-  // Today line
-  ctx.strokeStyle='rgba(255,255,255,0.5)';
-  ctx.setLineDash([4,4]);
-  ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(cx,padT);ctx.lineTo(cx,padT+chartH);ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle='rgba(255,255,255,0.5)';
-  ctx.font='10px sans-serif';
-  ctx.fillText('今日',cx+4,padT+12);
-
-  // Draw curves
-  const curves=[
-    {period:23,color:'#ef4444'},
-    {period:28,color:'#06b6d4'},
-    {period:33,color:'#f59e0b'},
-  ];
-  curves.forEach(({period,color})=>{
-    ctx.strokeStyle=color;
-    ctx.lineWidth=2.5;
-    ctx.shadowColor=color;
-    ctx.shadowBlur=6;
-    ctx.beginPath();
-    for(let px=0;px<chartW;px++){
-      const d=totalDays-days/2+px*(days/chartW);
-      const v=Math.sin(2*Math.PI*d/period);
-      const x=padL+px;
-      const y=cy-v*(chartH/2-4);
-      px===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-    }
-    ctx.stroke();
-    ctx.shadowBlur=0;
-  });
-
-  // Today dots
-  curves.forEach(({period,color})=>{
-    const v=Math.sin(2*Math.PI*totalDays/period);
-    const y=cy-v*(chartH/2-4);
-    ctx.beginPath();
-    ctx.arc(cx,y,5,0,Math.PI*2);
-    ctx.fillStyle=color;
-    ctx.shadowColor=color;ctx.shadowBlur=10;
-    ctx.fill();
-    ctx.shadowBlur=0;
-  });
-
-  // X axis labels
-  ctx.fillStyle='rgba(255,255,255,0.4)';
-  ctx.font='9px sans-serif';
-  ctx.textAlign='center';
-  ctx.fillText('-15日',padL,padT+chartH+14);
-  ctx.fillText('+15日',padL+chartW,padT+chartH+14);
-  ctx.fillText('今日',cx,padT+chartH+14);
-
-  // Y axis labels
-  ctx.textAlign='right';
-  ctx.fillText('+100%',padL-4,padT+8);
-  ctx.fillText('0%',padL-4,cy+4);
-  ctx.fillText('-100%',padL-4,padT+chartH);
-}
-
-/* ════════════════════════════════════════════
-   RESTART
-════════════════════════════════════════════ */
 function restart(){
-  chatData={name:'',lastName:'',firstName:'',birthday:'',faceImg:null,palmImg:null,comment:'',age:0,ageGroup:'hs1'};
+  chatData={name:'',lastName:'',firstName:'',birthday:'',faceImg:null,palmImg:null,comment:'',age:0,ageGroup:'hs1',
+    faceAnalysis:null,palmAnalysis:null};
   chatStep=0;
   document.getElementById('chat-messages').innerHTML='';
-  document.getElementById('results').innerHTML='';
   showScreen('intro');
 }
 </script>
+
 </body>
 </html>
